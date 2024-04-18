@@ -13,6 +13,10 @@
       ],
       "type": "assets",
       "workspace": "dapp_frontend"
+    },
+    "ii": {
+      "type": "pull",
+      "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
     }
   },
   "defaults": {
