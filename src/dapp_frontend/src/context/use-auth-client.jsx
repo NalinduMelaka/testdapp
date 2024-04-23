@@ -43,6 +43,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState(false);
   const [membertype, setMemebertype] = useState();
+  const [member, setMemeber] = useState({});
 
   useEffect(() => {
     // Initialize AuthClient
@@ -71,13 +72,15 @@ export const useAuthClient = (options = defaultOptions) => {
       const principal = identity.getPrincipal();
       setPrincipal(principal);
 
-      console.log("principal is like this::", principal);
-      console.log("identity is like this::", identity);
+
 
       const member = await dapp_backend.getMember();
       if (member.ok) {
         setIsMember(true);
         const key = Object.keys(member.ok);
+        const obj = member.ok;
+
+        setMemeber(Object.values(obj)[0]);
         setMemebertype(key[0]);
       }
       // console.log("this is the object", JSON.stringify(identity));
@@ -123,6 +126,7 @@ export const useAuthClient = (options = defaultOptions) => {
     loading,
     isMember,
     membertype,
+    member,
   };
 };
 

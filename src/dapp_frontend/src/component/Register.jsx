@@ -93,7 +93,7 @@ export default function Register() {
           transition: Bounce,
         });
         setTimeout(() => {
-          navigate("patient/dashboard");
+          window.location.reload();
         }, 2000)
       } else {
         setIsLoad(false);
@@ -142,7 +142,7 @@ export default function Register() {
           transition: Bounce,
         });
         setTimeout(() => {
-          navigate("doctor/dashboard");
+          window.location.reload();
         }, 2000)
       } else {
         setIsLoad(false);
@@ -193,7 +193,7 @@ export default function Register() {
           transition: Bounce,
         });
         setTimeout(() => {
-          navigate("pharmacist/dashboard");
+          navigate("/pharmacist");
         }, 2000)
       } else {
         setIsLoad(false);

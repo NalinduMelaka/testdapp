@@ -8,7 +8,7 @@ const DAuth = () => {
   return (
     <>
       {
-        (membertype == "doctor") ? <Outlet /> : <div className='flex justify-center items-center'><p>You don't have access for this level!</p></div>
+        (membertype == "doctor") ? <Outlet /> : <div className='flex justify-center items-center h-screen w-full'><p>You don't have access for this level!</p></div>
       }
     </>
   )
