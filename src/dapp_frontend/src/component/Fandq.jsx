@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
+
 } from "@material-tailwind/react";
 import { SidebarWithCta } from './patient/SidebarWithCta';
 import user from '../img/user.svg'
@@ -17,13 +18,15 @@ import Phsettings from './pharmacist/Phsettings';
 import Dsettings from './doctor/Dsettings';
 import { useAuth } from '../context/use-auth-client';
 import { dapp_backend } from '../../../declarations/dapp_backend';
+import { ToastContainer, toast, Bounce } from 'react-toastify';
 
 const Fandq = () => {
 
   const [userdata, setUserdata] = useState({});
   const [open, setOpen] = React.useState(false);
-  const { member, membertype } = useAuth();
+  const { member, membertype, logout } = useAuth();
   const [userMap, setUserMap] = useState({});
+  const [isprocess, setIsprocess] = useState(false);
 
   useEffect(() => {
     setUserdata(member);
@@ -52,16 +55,74 @@ const Fandq = () => {
 
   const handleUpdate = async () => {
     // Handle the update logic here
+    setIsprocess(true);
     console.log(membertype, userdata, userMap);
 
     const result = await dapp_backend.updateMember(userMap);
     console.log('Update button clicked', member, userdata, result);
+    if ('ok' in result) {
+      toast.success('🦄 Updated successfully!', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      setIsprocess(false);
+    } else {
+      toast.error('Something wrong try again later!', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      setIsprocess(false);
+    }
   };
 
   const hancledelte = async () => {
     //delete user
     const result = await dapp_backend.removeMember();
     console.log("result = ", result);
+    if ('ok' in result) {
+      toast.success('🦄 deleted successfully!', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      setIsprocess(false);
+      setTimeout(() => {
+        logout();
+      }, 2000)
+    } else {
+      toast.error('Something wrong try again later!', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      setIsprocess(false);
+    }
   }
 
   const handleOpen = () => setOpen(!open);
@@ -98,6 +159,9 @@ const Fandq = () => {
                 We undestand, and appreciate you using our service.
               </p>
               <button className='bg-blue-300 p-2 mt-4 rounded-md  font-bold' onClick={handleOpen} >Delete</button>
+              <div className='w-full flex justify-center items-center h-4'>
+                {isprocess && <Spinner />}
+              </div>
               <Dialog open={open} handler={handleOpen}>
                 <DialogHeader>Are you sure?</DialogHeader>
                 <DialogBody>
@@ -118,6 +182,7 @@ const Fandq = () => {
                 </DialogFooter>
               </Dialog>
             </div>
+            <ToastContainer />
           </div>
         </div>
       </main>

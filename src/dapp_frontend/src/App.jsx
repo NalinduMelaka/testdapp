@@ -14,6 +14,7 @@ import Mainlayout from "./component/Mainlayout";
 import PAuth from "./component/patient/PAuth";
 import DAuth from './component/doctor/DAuth';
 import PHAuth from './component/pharmacist/PHAuth';
+import Settings from "./component/Settings";
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
             <Route path="new" element={<New />} />
             {/* add a layout based on user type */}
             <Route element={<Mainlayout />} >
+              <Route path="/settings" element={<Settings />} />
               {/* for patients only urls */}
               <Route path="/patient" element={<PAuth />}>
                 <Route index element={<div>This is the patient home page</div>} />
