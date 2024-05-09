@@ -34,8 +34,8 @@ export default function Register() {
   const [patient, setPatient] = useState({
     firstname: '',
     lastname: '',
-    phone: '',
-    address: '/',
+    phone: '/',
+    id: '',
   });
   const [doctor, setDoctor] = useState({
     firstname: '',
@@ -79,8 +79,10 @@ export default function Register() {
   const psubmit = async () => {
     if (patient.firstname && patient.lastname && patient.phone) {
       setIsLoad(true);
+
       const result = await dapp_backend.addMember({ patient: patient });
-      if ('ok' in result) {
+      const result2 = await dapp_backend.createPatientIdMapping(patient.id);
+      if ('ok' in result && 'ok' in result2) {
         toast.success('🦄 Patient added successfully!', {
           position: "top-center",
           autoClose: 5000,
@@ -128,8 +130,9 @@ export default function Register() {
   const dsubmit = async () => {
     if (doctor.firstname && doctor.lastname && doctor.medicallicence) {
       const result = await dapp_backend.addMember({ doctor: doctor });
+      const result2 = await dapp_backend.createDoctorLicenceMapping(doctor.medicallicence);
       setIsLoad(true);
-      if ('ok' in result) {
+      if ('ok' in result && 'ok' in result2) {
         toast.success('🦄 Doctor added successfully!', {
           position: "top-center",
           autoClose: 5000,
@@ -193,7 +196,7 @@ export default function Register() {
           transition: Bounce,
         });
         setTimeout(() => {
-          navigate("/pharmacist");
+          window.location.reload();
         }, 2000)
       } else {
         setIsLoad(false);
@@ -284,60 +287,20 @@ export default function Register() {
 
                   {/**phone number */}
                   <Typography variant="h6" color="blue-gray" className="-mb-3">
-                    Phone number
+                    Id number
                   </Typography>
-                  <div className="relative flex w-full ">
-                    <Menu placement="bottom-start">
-                      <MenuHandler>
-                        <Button
-                          ripple={false}
-                          variant="text"
-                          color="blue-gray"
-                          className="flex h-10 items-center gap-2 rounded-r-none border border-r-0 border-blue-gray-200 bg-blue-gray-500/10 pl-3"
-                        >
-                          <img
-                            src={flags.svg}
-                            alt={name}
-                            className="h-4 w-4 rounded-full object-cover"
-                          />
-                          {countryCallingCode}
-                        </Button>
-                      </MenuHandler>
-                      <MenuList className="max-h-[20rem] max-w-[18rem]">
-                        {countries.map(({ name, flags, countryCallingCode }, index) => {
-                          return (
-                            <MenuItem
-                              key={name}
-                              value={name}
-                              className="flex items-center gap-2"
-                              onClick={() => setCountry(index)}
-                            >
-                              <img
-                                src={flags.svg}
-                                alt={name}
-                                className="h-5 w-5 rounded-full object-cover"
-                              />
-                              {name} <span className="ml-auto">{countryCallingCode}</span>
-                            </MenuItem>
-                          );
-                        })}
-                      </MenuList>
-                    </Menu>
-                    <Input
-                      type="tel"
-                      placeholder="Mobile Number"
-                      className="rounded-l-none !border-t-blue-gray-200 focus:!border-t-gray-900"
-                      labelProps={{
-                        className: "before:content-none after:content-none",
-                      }}
-                      containerProps={{
-                        className: "min-w-0",
-                      }}
-                      name="phone"
-                      value={patient.phone}
-                      onChange={handleChange}
-                    />
-                  </div>
+                  <Input
+                    size="sm"
+                    placeholder="Id Number"
+                    className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                    labelProps={{
+                      className: "before:content-none after:content-none",
+                    }}
+                    name="id"
+                    value={patient.id}
+                    onChange={handleChange}
+                  />
+
                   {isLoad ?? <Spinner className="h-4" />}
                   <Button className="" fullWidth onClick={psubmit}>
                     Register

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-
+import { Link } from 'react-router-dom';
 import {
   Spinner, Avatar,
   IconButton,
@@ -9,24 +9,19 @@ import {
   SpeedDialAction,
 
 } from "@material-tailwind/react";
-import { SidebarWithCta } from './patient/SidebarWithCta';
-import user from '../img/user.svg'
-import { SidebarWithBurgerMenu } from './SidebarWithBurgerMenu';
-
-import { useAuth } from '../context/use-auth-client';
-import { dapp_backend } from '../../../declarations/dapp_backend';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 
+import { useAuth } from '../../context/use-auth-client';
+import { dapp_backend } from '../../../../declarations/dapp_backend';
 import {
   PlusIcon,
   HomeIcon,
   FolderPlusIcon
 } from "@heroicons/react/24/outline";
-
-const Fandq = () => {
-
+const PMedications = () => {
   const { member, membertype, logout, isMember } = useAuth();
   const [isprocess, setIsprocess] = useState(false);
+
 
   //for the medications
   const [medications, setMedications] = useState([]);
@@ -135,32 +130,59 @@ const Fandq = () => {
     const result = await dapp_backend.deleteMedicationAtIndex(index);
     console.log("indes", index);
   };
-
-
   return (
-    <div className='w-full'>
-      <div className="hidden h-full md:flex md:w-64 md:flex-col md:fixed z-[80]  lg:flex  lg:flex-col lg:fixed bg-[#B5C0D0] ">
-        {/*sidebar */}
-        <SidebarWithCta />
-
+    <div className='w-full h-full p-4'>
+      <div className='flex flex-row'><p className='font-bold text-xl mt-4 ml-2'>Medications </p>
+        <div className='absolute top-14 right-4'>
+          <SpeedDial placement="top">
+            <SpeedDialHandler>
+              <IconButton size="lg" className="rounded-full">
+                <PlusIcon className="h-5 w-5 transition-transform group-hover:rotate-45" />
+              </IconButton>
+            </SpeedDialHandler>
+            <SpeedDialContent>
+              <SpeedDialAction>
+                <Link to={`/patient/medications/new`}>
+                  <FolderPlusIcon className="h-5 w-5" />
+                </Link>
+              </SpeedDialAction>
+            </SpeedDialContent>
+          </SpeedDial>
+        </div>
       </div>
-      <main className="md:pl-64  pb-0 h-screen overflow-y-auto bg-[#FEFDED]">
-        <div className='w-full h-12  flex flex-row justify-between bg-[#AAD7D9]'>
-          <SidebarWithBurgerMenu />
-          <div className='w-full flex justify-end'>
-            <Avatar src={user} />
-          </div>
-        </div>
-        {/*Navbar */}
-        <div className='flex justify-center items-center ' style={{ height: 'calc(100vh - 3rem)' }}>
-          {/*main content childrend */}
-          <div className='w-full h-full'>
+      <ToastContainer />
 
-          </div>
-        </div>
-      </main>
+      <div>
+        <table className='w-2/3 mt-8'>
+          <thead className='w-full'>
+            <tr className='flex justify-between'>
+              <th>Drug Name</th>
+              <th>Status</th>
+              <th>Dose</th>
+              <th>Note</th>
+              <th>Reason</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody className='w-full'>
+            {medications?.map((med, index) => (
+              <tr key={index} className='flex justify-between mx-2'>
+                <td>{med.drugname}</td>
+                <td>{med.status}</td>
+                <td>{med.dose}</td>
+                <td>{med.note}</td>
+                <td>{med.reason}</td>
+                <td>
+                  <button onClick={() => hancledelte(index)} className='bg-red-400 p-1 rounded-md text-white font-normal'>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   )
 }
 
-export default Fandq
+export default PMedications

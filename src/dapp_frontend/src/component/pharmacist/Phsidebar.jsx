@@ -32,8 +32,8 @@ import {
   ChevronDownIcon,
   CubeTransparentIcon,
 } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
-export function SidebarWithCta() {
+
+export function Phsidebar() {
   const [open, setOpen] = React.useState(0);
   const [openAlert, setOpenAlert] = React.useState(true);
 
@@ -45,7 +45,7 @@ export function SidebarWithCta() {
     <Card className="w-full h-full bg-[#B5C0D0]" >
       <div className="mb-2 p-4 mx-auto mt-4">
         <Typography variant="h3" color="blue-gray">
-          Patient
+          Pharmacist
         </Typography>
       </div>
       <List>
@@ -55,59 +55,19 @@ export function SidebarWithCta() {
           </ListItemPrefix>
           Dashboard
         </ListItem>
-        <Link to={"/patient/medications"}>
-          <ListItem>
-            <ListItemPrefix>
-              <EllipsisHorizontalCircleIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Medications
-          </ListItem>
-        </Link>
-        <ListItem>
-          <ListItemPrefix>
-            <CheckBadgeIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Oppoinments
-        </ListItem>
-
-        <ListItem>
-          <ListItemPrefix>
-            <BookOpenIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Log book @ notes
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <HomeIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Hospital Visits
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <UserCircleIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Contacts
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <PencilSquareIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Clinical notes
-        </ListItem>
         <ListItem>
           <ListItemPrefix>
             <ClipboardDocumentCheckIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Consensus
+          Medications
         </ListItem>
-        <Link to={"/settings"}>
-          <ListItem>
-            <ListItemPrefix>
-              <CogIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Settings
-          </ListItem>
-        </Link>
+        <ListItem>
+          <ListItemPrefix>
+            <CogIcon className="h-5 w-5" />
+          </ListItemPrefix>
+          Settings
+        </ListItem>
+
         <hr className="my-2 border-blue-gray-50" />
 
 

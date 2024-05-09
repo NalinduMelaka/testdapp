@@ -12,7 +12,7 @@ const PatientLayout = ({ children }) => {
 
       </div>
       <main className="md:pl-64  pb-0 h-screen overflow-y-auto bg-[#FEFDED]">
-        <div className='w-full h-12  flex flex-row justify-between bg-[#AAD7D9]'>
+        <div className='w-full h-12  flex flex-row justify-between bg-[#FA7070]'>
           <SidebarWithBurgerMenu />
           <div className='w-full flex justify-end'>
             <Avatar src={user} />

@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@dfinity/agent": "^0.15.7",
+    "@dfinity/assets": "^0.15.7",
     "@dfinity/auth-client": "^1.2.0",
     "@dfinity/candid": "^0.15.7",
+    "@dfinity/identity": "^0.15.0",
     "@dfinity/principal": "^0.15.7",
     "@heroicons/react": "^2.1.3",
     "@material-tailwind/react": "^2.1.9",

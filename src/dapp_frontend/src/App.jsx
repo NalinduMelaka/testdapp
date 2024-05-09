@@ -15,6 +15,9 @@ import PAuth from "./component/patient/PAuth";
 import DAuth from './component/doctor/DAuth';
 import PHAuth from './component/pharmacist/PHAuth';
 import Settings from "./component/Settings";
+import PMedications from "./component/patient/PMedications";
+import T2 from "./component/T2";
+import NewMedication from "./component/patient/NewMedication";
 
 function App() {
 
@@ -27,6 +30,7 @@ function App() {
         <Route path="/" element={<Land />} />
         <Route path="about" element={<About />} />
         <Route path="fandq" element={<Fandq />} />
+        <Route path="testtwo" element={<T2 />} />
 
         {/*fail */}
         <Route element={<RequreAuth />}>
@@ -46,6 +50,8 @@ function App() {
               {/* for patients only urls */}
               <Route path="/patient" element={<PAuth />}>
                 <Route index element={<div>This is the patient home page</div>} />
+                <Route path="medications" element={<PMedications />} />
+                <Route path="medications/new" element={<NewMedication />} />
                 <Route path="test2" element={<div> test2</div>} />
                 <Route path="dashboard" element={<div>this is dashbord</div>} />
               </Route>

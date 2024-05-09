@@ -12,7 +12,7 @@ import { useAuth } from "../context/use-auth-client";
 
 function NavList() {
 
-  const { login, isAuthenticated, logout } = useAuth();
+  const { login, isAuthenticated, logout, membertype, } = useAuth();
 
   const handleLogin = () => {
     if (!isAuthenticated) {
@@ -23,6 +23,7 @@ function NavList() {
   const handleLogout = () => {
     if (isAuthenticated) {
       logout();
+      window.location.reload();
     }
   };
 
@@ -74,7 +75,7 @@ function NavList() {
       </Typography>
       {console.log("this is auth based on contest", isAuthenticated)}
       {(isAuthenticated == true) ?
-        <Button onClick={logout}>Logout</Button>
+        <Button onClick={handleLogout}>Logout</Button>
         :
         <Button onClick={login}>Log in</Button>
       }

@@ -7,14 +7,14 @@ const Registraton = () => {
   const [name, setName] = useState('');
   const [date, setDate] = useState();
   const [gender, setGender] = useState('');
-  const [address, setAddress] = useState('');
+  const [id, setId] = useState('');
   const [phone, setPhone] = useState('');
   const [account, setAccount] = useState('');
   const [email, setEmail] = useState('');
   const onsubmit = async (e) => {
     console.log("clicked")
     e.preventDefault();
-    if (date && name && gender && address && phone && account && email) {
+    if (date && name && gender && id && phone && account && email) {
       toast.success('🦄 Wow so easy!', {
         position: "top-center",
         autoClose: 5000,
@@ -29,7 +29,7 @@ const Registraton = () => {
       console.log("success")
     } else {
       console.log("empty")
-      console.log(name, gender, address, phone, account, email);
+      console.log(name, gender, id, phone, account, email);
     }
   }
   return (
@@ -48,8 +48,8 @@ const Registraton = () => {
                 <option value="male">Male</option>
                 <option value="male">Female</option>
               </select>
-              <label htmlFor="">Address</label>
-              <input type="text" required onChange={e => setAddress(e.target.value)} />
+              <label htmlFor="">Id</label>
+              <input type="text" required onChange={e => setId(e.target.value)} />
               <label htmlFor="">Phone number</label>
               <input type="tel" required onChange={e => setPhone(e.target.value)} />
               <label>Account type</label>
