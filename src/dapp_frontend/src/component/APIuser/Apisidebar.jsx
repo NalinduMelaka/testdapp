@@ -25,7 +25,7 @@ import {
   BookOpenIcon,
   HomeIcon,
   PencilSquareIcon,
-  ClipboardDocumentCheckIcon
+  ClipboardDocumentCheckIcon,
 } from "@heroicons/react/24/solid";
 import {
   ChevronRightIcon,
@@ -33,7 +33,7 @@ import {
   CubeTransparentIcon,
 } from "@heroicons/react/24/outline";
 
-export function Phsidebar() {
+export function Apisidebar() {
   const [open, setOpen] = React.useState(0);
   const [openAlert, setOpenAlert] = React.useState(true);
 
@@ -42,7 +42,7 @@ export function Phsidebar() {
   };
 
   return (
-    <Card className="space-y-4 py-4 flex flex-col h-full bg-[#A1C398] text-white" >
+    <Card className="space-y-4 py-4 flex flex-col h-full bg-[#A1C398] text-white">
       <div className="mb-2 p-4 mx-auto mt-4">
         <Typography variant="h3" color="blue-gray">
           Pharmacist
@@ -69,11 +69,7 @@ export function Phsidebar() {
         </ListItem>
 
         <hr className="my-2 border-blue-gray-50" />
-
-
-
       </List>
-
     </Card>
   );
 }

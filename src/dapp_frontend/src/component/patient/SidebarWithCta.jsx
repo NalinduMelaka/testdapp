@@ -26,13 +26,15 @@ import {
   HomeIcon,
   PencilSquareIcon,
   ClipboardDocumentCheckIcon
-} from "@heroicons/react/24/solid";
+} from "@heroicons/react/24/outline";
 import {
   ChevronRightIcon,
   ChevronDownIcon,
   CubeTransparentIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import logo from '../../../../dapp_frontend/public/logo.png'
+
 export function SidebarWithCta() {
   const [open, setOpen] = React.useState(0);
   const [openAlert, setOpenAlert] = React.useState(true);
@@ -42,73 +44,74 @@ export function SidebarWithCta() {
   };
 
   return (
-    <Card className="w-full h-full bg-[#B5C0D0]" >
-      <div className="mb-2 p-4 mx-auto mt-4">
-        <Typography variant="h3" color="blue-gray">
+    <Card className="w-full space-y-4 py-2 flex flex-col h-full bg-[#A1C398] text-white" >
+      <div className="mb-1 p-2 mx-auto mt-2 flex flex-row gap-4">
+        <img src={logo} alt="logo" height='25' width='25' />
+        <Typography variant="h4" color="white">
           Patient
         </Typography>
       </div>
       <List>
-        <ListItem>
+        <ListItem  className="text-white w-5/6">
           <ListItemPrefix>
-            <EllipsisHorizontalCircleIcon className="h-5 w-5" />
+            <EllipsisHorizontalCircleIcon className="h-5 w-5 text-[#171f18] font-bold" />
           </ListItemPrefix>
           Dashboard
         </ListItem>
         <Link to={"/patient/medications"}>
-          <ListItem>
+          <ListItem className="text-white w-5/6">
             <ListItemPrefix>
-              <EllipsisHorizontalCircleIcon className="h-5 w-5" />
+              <EllipsisHorizontalCircleIcon className="h-5 w-5 text-[#171f18] " />
             </ListItemPrefix>
             Medications
           </ListItem>
         </Link>
-        <ListItem>
+        <ListItem className="text-white w-5/6">
           <ListItemPrefix>
-            <CheckBadgeIcon className="h-5 w-5" />
+            <CheckBadgeIcon className="h-5 w-5 text-[#171f18] " />
           </ListItemPrefix>
           Oppoinments
         </ListItem>
 
-        <ListItem>
+        <ListItem className="text-white w-5/6">
           <ListItemPrefix>
-            <BookOpenIcon className="h-5 w-5" />
+            <BookOpenIcon className="h-5 w-5 text-[#171f18]" />
           </ListItemPrefix>
           Log book @ notes
         </ListItem>
-        <ListItem>
+        <ListItem className="text-white w-5/6">
           <ListItemPrefix>
-            <HomeIcon className="h-5 w-5" />
+            <HomeIcon className="h-5 w-5 text-[#171f18]" />
           </ListItemPrefix>
           Hospital Visits
         </ListItem>
-        <ListItem>
+        <ListItem className="text-white w-5/6">
           <ListItemPrefix>
-            <UserCircleIcon className="h-5 w-5" />
+            <UserCircleIcon className="h-5 w-5 text-[#171f18]" />
           </ListItemPrefix>
           Contacts
         </ListItem>
-        <ListItem>
+        <ListItem className="text-white w-5/6">
           <ListItemPrefix>
-            <PencilSquareIcon className="h-5 w-5" />
+            <PencilSquareIcon className="h-5 w-5 text-[#171f18]" />
           </ListItemPrefix>
           Clinical notes
         </ListItem>
-        <ListItem>
+        <ListItem className="text-white w-5/6">
           <ListItemPrefix>
-            <ClipboardDocumentCheckIcon className="h-5 w-5" />
+            <ClipboardDocumentCheckIcon className="h-5 w-5 text-[#171f18]" />
           </ListItemPrefix>
           Consensus
         </ListItem>
         <Link to={"/settings"}>
-          <ListItem>
+          <ListItem className="text-white w-5/6">
             <ListItemPrefix>
-              <CogIcon className="h-5 w-5" />
+              <CogIcon className="h-5 w-5 text-[#171f18]" />
             </ListItemPrefix>
             Settings
           </ListItem>
         </Link>
-        <hr className="my-2 border-blue-gray-50" />
+       
 
 
 

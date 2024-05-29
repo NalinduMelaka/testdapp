@@ -30,10 +30,18 @@ actor {
     slmcregno : Text;
   };
 
+   type APIuser = {
+    firstname : Text;
+    lastname : Text;
+    phone : Text;
+    id : Text;
+  };
+
   type User = {
     #patient : Patient;
     #doctor : Doctor;
     #pharma : Pharma;
+    #apiuser: APIuser;
   };
 
   type Medication = {
@@ -54,11 +62,14 @@ actor {
     reason : Text;
   };
 
+
+
   type Result<Ok, Err> = Types.Result<Ok, Err>;
   type HashMap<K, V> = Types.HashMap<K, V>;
 
   let members = HashMap.HashMap<Principal, User>(0, Principal.equal, Principal.hash);
   let patientIds = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
+  let apiuserIds = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
   let medicines = HashMap.HashMap<Principal, Buffer.Buffer<Medication>>(0, Principal.equal, Principal.hash);
   //for doctors
   let doctorLicences = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
@@ -130,6 +141,22 @@ actor {
       case (null) {
         let principal = caller;
         patientIds.put(id, principal);
+        return #ok();
+      };
+      case (?oldmemeber) {
+        D.print(debug_show (caller));
+        return #err("This id is already associated with a member profile.");
+      };
+    };
+
+  };
+
+  //for the api user id map
+  public shared ({ caller }) func createApiuserIdMapping(id : Text) : async Result<(), Text> {
+    switch (apiuserIds.get(id)) {
+      case (null) {
+        let principal = caller;
+        apiuserIds.put(id, principal);
         return #ok();
       };
       case (?oldmemeber) {

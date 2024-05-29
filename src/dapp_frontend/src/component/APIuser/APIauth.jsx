@@ -1,13 +1,12 @@
 import { Outlet } from "react-router-dom";
 import { useAuth } from "../../context/use-auth-client";
-import { useEffect, useState } from "react";
 
-const PHAuth = () => {
+const APIauth = () => {
   const { membertype } = useAuth();
 
   return (
     <>
-      {membertype == "pharma" ? (
+      {membertype == "apiuser" ? (
         <Outlet />
       ) : (
         <div className="flex justify-center items-center h-screen w-full">
@@ -18,4 +17,4 @@ const PHAuth = () => {
   );
 };
 
-export default PHAuth;
+export default APIauth;
