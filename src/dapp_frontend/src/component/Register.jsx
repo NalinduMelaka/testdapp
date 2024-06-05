@@ -27,7 +27,7 @@ export default function Register() {
   const [country, setCountry] = React.useState(112);
   const { name, flags, countryCallingCode } = countries[country];
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, isMember } = useAuth();
   const [isLoad, setIsLoad] = useState(false);
 
   const [patient, setPatient] = useState({
@@ -93,7 +93,7 @@ export default function Register() {
           transition: Bounce,
         });
         setTimeout(() => {
-          window.location.reload();
+          window.location.href = "/patient";
         }, 2000);
       } else {
         setIsLoad(false);
@@ -145,7 +145,7 @@ export default function Register() {
           transition: Bounce,
         });
         setTimeout(() => {
-          window.location.reload();
+          window.location.href = "/doctor";
         }, 2000);
       } else {
         setIsLoad(false);
@@ -193,7 +193,7 @@ export default function Register() {
           transition: Bounce,
         });
         setTimeout(() => {
-          window.location.reload();
+          window.location.href = "/pharmacist";
         }, 2000);
       } else {
         setIsLoad(false);
@@ -223,6 +223,11 @@ export default function Register() {
       });
     }
   };
+
+  // If the user is not a member, redirect to the home page
+  if (isMember) {
+    window.location.href = "/";
+  }
   return (
     <div className="h-screen w-full">
       <div className="h-12 bg-blue-400 flex items-center justify-end gap-4">

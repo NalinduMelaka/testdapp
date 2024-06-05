@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+
 import { Signup } from "./Signup";
 import Home from "./Home";
 import mainimg from "../img/main.jpg";

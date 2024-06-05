@@ -4,15 +4,15 @@ import {
   Collapse,
   Typography,
   IconButton,
-  Button
+  Button,
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/use-auth-client";
+import DashboardButton from "./DashboardButton";
 
 function NavList() {
-
-  const { login, isAuthenticated, logout, membertype, } = useAuth();
+  const { login, isAuthenticated, logout, membertype } = useAuth();
 
   const handleLogin = () => {
     if (!isAuthenticated) {
@@ -27,9 +27,7 @@ function NavList() {
     }
   };
 
-  useEffect(() => {
-
-  }, [])
+  useEffect(() => {}, []);
 
   return (
     <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -39,7 +37,10 @@ function NavList() {
         color="blue-gray"
         className="p-1 font-medium"
       >
-        <Link to="/" className="flex items-center hover:text-blue-500 transition-colors">
+        <Link
+          to="/"
+          className="flex items-center hover:text-blue-500 transition-colors"
+        >
           How it works
         </Link>
       </Typography>
@@ -49,7 +50,10 @@ function NavList() {
         color="blue-gray"
         className="p-1 font-medium"
       >
-        <a href="#" className="flex items-center hover:text-blue-500 transition-colors">
+        <a
+          href="#"
+          className="flex items-center hover:text-blue-500 transition-colors"
+        >
           Use Cases
         </a>
       </Typography>
@@ -59,7 +63,10 @@ function NavList() {
         color="blue-gray"
         className="p-1 font-medium"
       >
-        <a href="#" className="flex items-center hover:text-blue-500 transition-colors">
+        <a
+          href="#"
+          className="flex items-center hover:text-blue-500 transition-colors"
+        >
           Resources
         </a>
       </Typography>
@@ -69,17 +76,29 @@ function NavList() {
         color="blue-gray"
         className="p-1 font-medium"
       >
-        <Link to="/new" className="flex items-center hover:text-blue-500 transition-colors">
+        <Link
+          to="/new"
+          className="flex items-center hover:text-blue-500 transition-colors"
+        >
           About
         </Link>
       </Typography>
       {console.log("this is auth based on contest", isAuthenticated)}
-      {(isAuthenticated == true) ?
-        <Button onClick={handleLogout}>Logout</Button>
-        :
+      {isAuthenticated == true ? (
+        <div className="flex flex-row gap-4">
+          <DashboardButton />
+          <Button onClick={handleLogout}>Logout</Button>
+        </div>
+      ) : (
         <Button onClick={login}>Log in</Button>
-      }
-      {(isAuthenticated != true) ? <Button color="blue" onClick={login}>Sign up</Button> : <></>}
+      )}
+      {isAuthenticated != true ? (
+        <Button color="blue" onClick={login}>
+          Sign up
+        </Button>
+      ) : (
+        <></>
+      )}
     </ul>
   );
 }

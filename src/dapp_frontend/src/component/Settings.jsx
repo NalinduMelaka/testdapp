@@ -1,31 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import PatientLayout from './patient/PatientLayout'
-import Register from './Register'
+import React, { useEffect, useState } from "react";
+import PatientLayout from "./patient/PatientLayout";
+import Register from "./Register";
 import {
-  Spinner, Avatar, Popover,
+  Spinner,
+  Avatar,
+  Popover,
   Button,
   Dialog,
   DialogHeader,
   DialogBody,
   DialogFooter,
-
 } from "@material-tailwind/react";
-import { SidebarWithCta } from './patient/SidebarWithCta';
-import user from '../img/user.svg'
-import { SidebarWithBurgerMenu } from './SidebarWithBurgerMenu';
-import Psettings from './patient/Psettings';
-import Phsettings from './pharmacist/Phsettings';
-import Dsettings from './doctor/Dsettings';
-import { useAuth } from '../context/use-auth-client';
-import { dapp_backend } from '../../../declarations/dapp_backend';
-import { ToastContainer, toast, Bounce } from 'react-toastify';
+import { SidebarWithCta } from "./patient/SidebarWithCta";
+import user from "../img/user.svg";
+import { SidebarWithBurgerMenu } from "./SidebarWithBurgerMenu";
+import Psettings from "./patient/Psettings";
+import Phsettings from "./pharmacist/Phsettings";
+import Dsettings from "./doctor/Dsettings";
+import APIsettings from "./APIuser/APIsettings";
+import { useAuth } from "../context/use-auth-client";
+import { dapp_backend } from "../../../declarations/dapp_backend";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { Cog } from "lucide-react";
 
 const Settings = () => {
-
   const [userdata, setUserdata] = useState({});
   const [open, setOpen] = React.useState(false);
-  const { member, membertype, logout } = useAuth();
+  const { member, membertype, logout, setIsMember, setMemebertype } = useAuth();
   const [userMap, setUserMap] = useState({});
   const [isprocess, setIsprocess] = useState(false);
   const navigate = useNavigate();
@@ -36,20 +38,46 @@ const Settings = () => {
 
   useEffect(() => {
     if (membertype) {
-      setUserMap(prevState => ({
-        [membertype]: userdata
+      setUserMap((prevState) => ({
+        [membertype]: userdata,
       }));
     }
   }, [membertype, userdata]);
 
   const renderSettingsComponent = () => {
     switch (membertype) {
-      case 'patient':
-        return <Psettings onUpdate={handleUpdate} userdata={userdata} setUserdata={setUserdata} />;
+      case "patient":
+        return (
+          <Psettings
+            onUpdate={handleUpdate}
+            userdata={userdata}
+            setUserdata={setUserdata}
+          />
+        );
       case "doctor":
-        return <Dsettings onUpdate={handleUpdate} userdata={userdata} setUserdata={setUserdata} />;
+        return (
+          <Dsettings
+            onUpdate={handleUpdate}
+            userdata={userdata}
+            setUserdata={setUserdata}
+          />
+        );
       case "pharma":
-        return <Phsettings onUpdate={handleUpdate} userdata={userdata} setUserdata={setUserdata} />;
+        return (
+          <Phsettings
+            onUpdate={handleUpdate}
+            userdata={userdata}
+            setUserdata={setUserdata}
+          />
+        );
+      case "apiuser":
+        return (
+          <APIsettings
+            onUpdate={handleUpdate}
+            userdata={userdata}
+            setUserdata={setUserdata}
+          />
+        );
       default:
         return null;
     }
@@ -61,9 +89,9 @@ const Settings = () => {
     console.log(membertype, userdata, userMap);
 
     const result = await dapp_backend.updateMember(userMap);
-    console.log('Update button clicked', member, userdata, result);
-    if ('ok' in result) {
-      toast.success('🦄 Updated successfully!', {
+    console.log("Update button clicked", member, userdata, result);
+    if ("ok" in result) {
+      toast.success("🦄 Updated successfully!", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -76,7 +104,7 @@ const Settings = () => {
       });
       setIsprocess(false);
     } else {
-      toast.error('Something wrong try again later!', {
+      toast.error("Something wrong try again later!", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -94,10 +122,12 @@ const Settings = () => {
   const hancledelte = async () => {
     //delete user
     setIsprocess(true);
+    setIsMember(false);
+    setMemebertype(null);
     const result = await dapp_backend.removeMember();
     console.log("result = ", result);
-    if ('ok' in result) {
-      toast.success('🦄 deleted successfully!', {
+    if ("ok" in result) {
+      toast.success("🦄 deleted successfully!", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -110,11 +140,10 @@ const Settings = () => {
       });
       setIsprocess(false);
       setTimeout(() => {
-        logout();
-        navigate("/");
-      }, 2000)
+        navigate("/register");
+      }, 2000);
     } else {
-      toast.error('Something wrong try again later!', {
+      toast.error("Something wrong try again later!", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -127,33 +156,48 @@ const Settings = () => {
       });
       setIsprocess(false);
     }
-  }
+  };
 
   const handleOpen = () => setOpen(!open);
 
-
   return (
-    <div className='h-full w-full p-4'>
-      <p className='font-bold text-2xl mb-8'>Personal settings</p>
+    <div className="h-full w-full p-4">
+      <p className="font-bold text-2xl mb-8">Personal settings</p>
       <div>
-        <p className='text-md font-bold'>Profile</p>
-        <p>This information may be publicaly avalable So be careful what you share</p>
+        <div className="flex flex-row items-center gap-2 ">
+          <Cog size={48} />
+          <p className="md:text-3xl 2xl:text-4xl text-black font-bold ">
+            Profile
+          </p>
+        </div>
+        <p className="mt-2 mb-4">
+          This information may be publicaly avalable So be careful what you
+          share
+        </p>
         {renderSettingsComponent()}
       </div>
-      <div >
-        <p className='font-bold mb-4 mt-8'>Delete Personal Account</p>
-        <p className='mb-4'>
-          Don't need health record management system any longer?<br />
+      <div>
+        <p className="font-bold mb-4 mt-8">Delete Personal Account</p>
+        <p className="mb-4">
+          Don't need health record management system any longer?
+          <br />
           We undestand, and appreciate you using our service.
         </p>
-        <button className='bg-blue-300 p-2 mt-4 rounded-md  font-bold' onClick={handleOpen} >Delete</button>
-        <div className='w-full flex justify-center items-center h-4'>
+        <button
+          className="bg-blue-300 p-2 mt-4 rounded-md  font-bold"
+          onClick={handleOpen}
+        >
+          Delete
+        </button>
+        <div className="w-full flex justify-center items-center h-4">
           {isprocess && <Spinner />}
         </div>
         <Dialog open={open} handler={handleOpen}>
           <DialogHeader>Are you sure?</DialogHeader>
           <DialogBody>
-            After deleting your account, you will no longer be a member of this system, and all your data will be permanently deleted. Are you sure you want to proceed with deleting your account?
+            After deleting your account, you will no longer be a member of this
+            system, and all your data will be permanently deleted. Are you sure
+            you want to proceed with deleting your account?
           </DialogBody>
           <DialogFooter>
             <Button
@@ -164,7 +208,14 @@ const Settings = () => {
             >
               <span>Cancel</span>
             </Button>
-            <Button variant="gradient" color="green" onClick={() => { handleOpen(); hancledelte(); }}>
+            <Button
+              variant="gradient"
+              color="green"
+              onClick={() => {
+                handleOpen();
+                hancledelte();
+              }}
+            >
               <span>Confirm</span>
             </Button>
           </DialogFooter>
@@ -172,7 +223,7 @@ const Settings = () => {
       </div>
       <ToastContainer />
     </div>
-  )
-}
+  );
+};
 
-export default Settings
+export default Settings;

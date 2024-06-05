@@ -22,6 +22,9 @@ import PLandingPage from "./component/patient/PLandingPage";
 import APIRegister from "./component/APIuser/APIRegister";
 import Register from "./component/Register";
 import APIauth from "./component/APIuser/APIauth";
+import Upload from "./component/patient/Upload";
+import Psettings from "./component/patient/Psettings";
+import Pmedicatoindynamic from "./component/patient/Pmedicatoindynamic";
 
 function App() {
   return (
@@ -29,7 +32,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         {/*public routes */}
         <Route path="/" element={<Land />} />
-        <Route path="about" element={<APIRegister />} />
+        <Route path="about" element={<PMedications />} />
         <Route path="register" element={<Register />} />
         <Route path="fandq" element={<Fandq />} />
         <Route path="testtwo" element={<T2 />} />
@@ -39,6 +42,7 @@ function App() {
 
         {/*we want to protected these routes we can protec this using requreauth*/}
         <Route element={<Test />}>
+          <Route path="datauserreg" element={<APIRegister />} />
           <Route path="dashboard" element={<Dashboard />} />
           {/* filter registed usre or not if not show the registration*/}
           <Route element={<RegistredAuth />}>
@@ -51,8 +55,13 @@ function App() {
                 <Route index element={<PLandingPage />} />
                 <Route path="medications" element={<PMedications />} />
                 <Route path="medications/new" element={<NewMedication />} />
+                <Route
+                  path="medications/:id"
+                  element={<Pmedicatoindynamic />}
+                />
                 <Route path="test2" element={<div> test2</div>} />
                 <Route path="dashboard" element={<div>this is dashbord</div>} />
+                <Route path="upload" element={<Upload />} />
               </Route>
               {/* for doctors only */}
               <Route path="/doctor" element={<DAuth />}>

@@ -2,8 +2,8 @@ import { AuthClient } from "@dfinity/auth-client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { HttpAgent } from "@dfinity/agent";
 
-import { canisterId, createActor } from 'declarations/dapp_backend';
-import { dapp_backend } from 'declarations/dapp_backend';
+import { canisterId, createActor } from "declarations/dapp_backend";
+import { dapp_backend } from "declarations/dapp_backend";
 const AuthContext = createContext();
 
 const defaultOptions = {
@@ -72,8 +72,6 @@ export const useAuthClient = (options = defaultOptions) => {
       const principal = identity.getPrincipal();
       setPrincipal(principal);
 
-
-
       const member = await dapp_backend.getMember();
       if (member.ok) {
         setIsMember(true);
@@ -88,7 +86,6 @@ export const useAuthClient = (options = defaultOptions) => {
 
       setAuthClient(client);
 
-
       const actor = createActor(canisterId, {
         agentOptions: {
           identity,
@@ -97,7 +94,6 @@ export const useAuthClient = (options = defaultOptions) => {
 
       setWhoamiActor(actor);
       setLoading(false);
-
     } catch (error) {
       setLoading(false);
       console.error("Error updating client:", error);
@@ -127,6 +123,8 @@ export const useAuthClient = (options = defaultOptions) => {
     isMember,
     membertype,
     member,
+    setIsMember,
+    setMemebertype,
   };
 };
 
