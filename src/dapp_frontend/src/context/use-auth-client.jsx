@@ -3,6 +3,10 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { HttpAgent } from "@dfinity/agent";
 
 import { canisterId, createActor } from "declarations/dapp_backend";
+import {
+  canisterId as canisterIdtwo,
+  createActor as createActortwo,
+} from "declarations/assets";
 import { dapp_backend } from "declarations/dapp_backend";
 const AuthContext = createContext();
 
@@ -40,6 +44,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const [identity, setIdentity] = useState(null);
   const [principal, setPrincipal] = useState(null);
   const [whoamiActor, setWhoamiActor] = useState(null);
+  const [whoamiActorTwo, setWhoamiActorTwo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState(false);
   const [membertype, setMemebertype] = useState();
@@ -92,6 +97,12 @@ export const useAuthClient = (options = defaultOptions) => {
         },
       });
 
+      const actortwo = createActortwo(canisterIdtwo, {
+        agentOptions: {
+          identity,
+        },
+      });
+      setWhoamiActorTwo(actortwo);
       setWhoamiActor(actor);
       setLoading(false);
     } catch (error) {
@@ -119,6 +130,7 @@ export const useAuthClient = (options = defaultOptions) => {
     identity,
     principal,
     whoamiActor,
+    whoamiActorTwo,
     loading,
     isMember,
     membertype,

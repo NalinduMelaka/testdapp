@@ -6,8 +6,9 @@ import Iter "mo:base/Iter";
 import D "mo:base/Debug";
 import Text "mo:base/Text";
 import Buffer "mo:base/Buffer";
-import Time "mo:base/Time";
 import Nat "mo:base/Nat";
+import Bool "mo:base/Bool";
+import Array "mo:base/Array";
 
 actor {
 
@@ -57,6 +58,16 @@ actor {
     timestamp : Nat;
   };
 
+  type Prescription = {
+    conform: Bool;
+    status: Text;
+    prescriber: Text;
+    note: Text;
+    reason: Text;
+    timestamp: Nat;
+    medications: [Text];
+  };
+
   type Appointment = {
     patientId : Text;
     doctorId : Text;
@@ -74,9 +85,30 @@ actor {
   let patientIds = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
   let apiuserIds = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
   let medicines = HashMap.HashMap<Principal, Buffer.Buffer<Medication>>(0, Principal.equal, Principal.hash);
+  let prescriptions = HashMap.HashMap<Principal, Buffer.Buffer<Prescription>>(0,Principal.equal, Principal.hash);
   //for doctors
   let doctorLicences = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
   let appointments = HashMap.HashMap<Text, Buffer.Buffer<Appointment>>(0, Text.equal, Text.hash);
+
+
+
+public shared query func getTopPharmas(slmcRegNoPrefix : ?Text) : async [(Text, Text)] {
+  for ((principal, user) in members.entries()) {
+    switch (user) {
+      case (#pharma(pharma)) {
+        if (?pharma.slmcregno == slmcRegNoPrefix) {
+          // Return an array with the exact match
+          return [(pharma.firstname, pharma.slmcregno)];
+        };
+      };
+      case (_) {};
+    };
+  };
+  // Return an empty array if no exact match is found
+  return [];
+};
+
+
 
   // Function to add a medication record for a user
   public shared ({ caller }) func addMedication(med : Medication) : async Result<(), Text> {
@@ -98,6 +130,26 @@ actor {
     return #ok();
   };
 
+  //Function to add prescription record for a user
+  public shared func addPrescription(pri: Principal, pres: Prescription): async Result<(), Text>{
+   //Find created the buffer for user
+   let medsBuffer = switch (prescriptions.get(pri)) {
+      case (null) {
+        // If the user does not exist, create a new buffer
+        let newBuffer = Buffer.Buffer<Prescription>(1);
+        prescriptions.put(pri, newBuffer);
+        newBuffer;
+      };
+      case (?buffer) {
+        // If the user exists, use the existing buffer
+        buffer;
+      };
+    };
+    // Add the new medication to the buffer
+    medsBuffer.add(pres);
+    return #ok();
+  };
+
   // Function to get a user's medication list as an array
   public shared query ({ caller }) func getMedicationList() : async Result<[Medication], Text> {
     // Retrieve the buffer for the user's medications
@@ -113,6 +165,25 @@ actor {
 
     };
   };
+  
+  //Function to get a user's prescription list as an array
+  public shared query ({ caller}) func getPrescriptionList(): async Result<[Prescription], Text> {
+    //Retrieve the buffer for the users's prescriptions
+
+    let presBufferOpt = prescriptions.get(caller);
+
+    switch(presBufferOpt){
+      case (null){
+        return #err("user not found.");
+      };
+      case (?presBuffe){
+        return #ok(Buffer.toArray(presBuffe));
+      };
+    };
+
+  };
+
+
   
   //Functions to get a specific medication
   public shared query ({caller}) func getmedication(ind: Nat): async Result<Medication, Text>{
@@ -134,6 +205,7 @@ actor {
   };
 
   // Function to update a medication record for a user by index
+
 public shared ({ caller }) func updateMedication(index : Nat, updatedMed : Medication) : async Result<(), Text> {
     // Retrieve the buffer for the user's medications
     let medsBufferOpt = medicines.get(caller);

@@ -9,7 +9,7 @@
  *
  * The component uses various UI components from the `@material-tailwind/react` library, as well as the `ToastContainer` component from the `react-toastify` library to display success or error messages.
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { dapp_backend } from "../../../../declarations/dapp_backend";
 import { useAuth } from "../../context/use-auth-client";
@@ -37,11 +37,17 @@ const Pmedicatoindynamic = () => {
   const [openShare, setOpenShare] = React.useState(false);
   const [isprocess, setIsprocess] = useState(false);
   const [isdeleting, setIsdeleting] = useState(false);
+  const [slcid, setSlcid] = useState(null);
+  const inputRef = useRef(null);
   const navigate = useNavigate();
   const handleOpen = () => setOpen(!open);
   const handleOpenShare = () => setOpenShare(!openShare);
   const handleInputChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
+  };
+
+  const handleslcreg = () => {
+    setSlcid(inputRef.current.value);
   };
 
   useEffect(() => {
@@ -68,8 +74,9 @@ const Pmedicatoindynamic = () => {
   const ShareDialog = () => {
     return (
       <Dialog open={openShare} handler={handleOpenShare}>
-        <DialogHeader>Share Dialog</DialogHeader>
+        <DialogHeader>Select a Pharmacist</DialogHeader>
         <DialogBody>
+          <input ref={inputRef} onChange={handleslcreg} />
           This is a dialog for sharing the medication data.
         </DialogBody>
         <DialogFooter>

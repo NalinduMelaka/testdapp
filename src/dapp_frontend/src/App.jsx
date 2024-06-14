@@ -25,6 +25,12 @@ import APIauth from "./component/APIuser/APIauth";
 import Upload from "./component/patient/Upload";
 import Psettings from "./component/patient/Psettings";
 import Pmedicatoindynamic from "./component/patient/Pmedicatoindynamic";
+import UploadP from "./component/patient/UploadP";
+import Pprescription from "./component/patient/Pprescription";
+import Dprescription from "./component/doctor/Dprescription";
+import PAppointment from "./component/patient/PAppointment";
+import PEmergency from "./component/patient/PEmergency";
+import Preports from "./component/patient/Preports";
 
 function App() {
   return (
@@ -32,7 +38,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         {/*public routes */}
         <Route path="/" element={<Land />} />
-        <Route path="about" element={<PMedications />} />
+        <Route path="about" element={<PAppointment />} />
         <Route path="register" element={<Register />} />
         <Route path="fandq" element={<Fandq />} />
         <Route path="testtwo" element={<T2 />} />
@@ -53,12 +59,18 @@ function App() {
               {/* for patients only urls */}
               <Route path="/patient" element={<PAuth />}>
                 <Route index element={<PLandingPage />} />
+                <Route path="upload" element={<UploadP />} />
                 <Route path="medications" element={<PMedications />} />
                 <Route path="medications/new" element={<NewMedication />} />
                 <Route
                   path="medications/:id"
                   element={<Pmedicatoindynamic />}
                 />
+                <Route path="prescription" element={<Pprescription />} />
+                <Route path="appointment" element={<PAppointment />} />
+                <Route path="emergency" element={<PEmergency />} />
+                <Route path="reports" element={<Preports />} />
+
                 <Route path="test2" element={<div> test2</div>} />
                 <Route path="dashboard" element={<div>this is dashbord</div>} />
                 <Route path="upload" element={<Upload />} />

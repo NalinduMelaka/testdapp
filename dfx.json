@@ -5,14 +5,14 @@
       "type": "motoko"
     },
     "dapp_frontend": {
-      "dependencies": [
-        "dapp_backend"
-      ],
-      "source": [
-        "src/dapp_frontend/dist"
-      ],
+      "dependencies": ["dapp_backend"],
+      "source": ["src/dapp_frontend/dist"],
       "type": "assets",
       "workspace": "dapp_frontend"
+    },
+    "assets": {
+      "type": "assets",
+      "source": ["src/assets"]
     },
     "ii": {
       "type": "pull",

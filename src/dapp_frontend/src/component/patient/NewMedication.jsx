@@ -3,6 +3,14 @@ import { useAuth } from "../../context/use-auth-client";
 import { dapp_backend } from "../../../../declarations/dapp_backend";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  Input,
+  Checkbox,
+  Button,
+  Typography,
+  Textarea,
+} from "@material-tailwind/react";
 
 const NewMedication = () => {
   const { member, membertype, logout, isMember } = useAuth();
@@ -61,66 +69,93 @@ const NewMedication = () => {
   return (
     <div className="h-full w-full p-4">
       <p className="font-bold text-xl">New medication</p>
-      <div className="w-1/3">
-        <div className="flex flex-row justify-between py-4">
-          <label>Drug Name:</label>
-          <input
+      <div className="w-2/3">
+        <div className="flex flex-row justify-between py-4 gap-12">
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Drug Name:
+          </Typography>
+          <Input
             type="text"
             name="drugname"
             value={med.drugname}
             onChange={handleChange}
-            className="border border-black mx-4"
+            className="w-72 !border-t-blue-gray-200 focus:!border-t-gray-900"
+            labelProps={{
+              className: "before:content-none after:content-none",
+            }}
           />
         </div>
-        <div className="flex flex-row justify-between py-4">
-          <label>Status:</label>
-          <input
+        <div className="flex flex-row justify-between py-4 gap-12">
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Status:
+          </Typography>
+
+          <Input
             type="text"
             name="status"
             value={med.status}
             onChange={handleChange}
-            className="border border-black mx-4"
+            className="w-72 !border-t-blue-gray-200 focus:!border-t-gray-900"
+            labelProps={{
+              className: "before:content-none after:content-none",
+            }}
           />
         </div>
-        <div className="flex flex-row justify-between py-4">
-          <label>Dose:</label>
-          <input
+        <div className="flex flex-row justify-between py-4 gap-12">
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Dose:
+          </Typography>
+
+          <Input
             type="text"
             name="dose"
             value={med.dose}
             onChange={handleChange}
-            className="border border-black mx-4"
+            className="w-72 !border-t-blue-gray-200 focus:!border-t-gray-900"
+            labelProps={{
+              className: "before:content-none after:content-none",
+            }}
           />
         </div>
-        <div className="flex flex-row justify-between py-4">
-          <label>Note:</label>
-          <input
+        <div className="flex justify-between flex-row gap-12">
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Note:
+          </Typography>
+          <Input
             type="text"
             name="note"
             value={med.note}
             onChange={handleChange}
-            className="border border-black mx-4"
+            className="w-72 !border-t-blue-gray-200 focus:!border-t-gray-900"
+            labelProps={{
+              className: "before:content-none after:content-none",
+            }}
           />
         </div>
-        <div className="flex flex-row justify-between py-4">
-          <label>Reason:</label>
-          <textarea
+        <div className="flex flex-row justify-between py-4 gap-12">
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Reason:
+          </Typography>
+          <Textarea
             rows="5"
             cols="20"
             name="reason"
             value={med.reason}
             onChange={handleChange}
-            className="border border-black mx-4"
-          ></textarea>
+            className="w-72 !border-t-blue-gray-200 focus:!border-t-gray-900"
+            labelProps={{
+              className: "before:content-none after:content-none",
+            }}
+          ></Textarea>
         </div>
       </div>
       <div className="flex justify-center h-8">
-        <button
+        <Button
           onClick={handleSubmit}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Submit
-        </button>
+        </Button>
       </div>
     </div>
   );

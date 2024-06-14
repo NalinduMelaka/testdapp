@@ -25,7 +25,8 @@ import {
   BookOpenIcon,
   HomeIcon,
   PencilSquareIcon,
-  ClipboardDocumentCheckIcon
+  ClipboardDocumentCheckIcon,
+  BeakerIcon,
 } from "@heroicons/react/24/outline";
 import {
   ChevronRightIcon,
@@ -33,7 +34,7 @@ import {
   CubeTransparentIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import logo from '../../../../dapp_frontend/public/logo.png'
+import logo from "../../../../dapp_frontend/public/logo.png";
 
 export function SidebarWithCta() {
   const [open, setOpen] = React.useState(0);
@@ -44,15 +45,15 @@ export function SidebarWithCta() {
   };
 
   return (
-    <Card className="w-full space-y-4 py-2 flex flex-col h-full bg-[#A1C398] text-white" >
+    <Card className="w-full space-y-4 py-2 flex flex-col h-full bg-[#A1C398] text-white">
       <div className="mb-1 p-2 mx-auto mt-2 flex flex-row gap-4">
-        <img src={logo} alt="logo" height='25' width='25' />
+        <img src={logo} alt="logo" height="25" width="25" />
         <Typography variant="h4" color="white">
           Patient
         </Typography>
       </div>
       <List>
-        <ListItem  className="text-white w-5/6">
+        <ListItem className="text-white w-5/6">
           <ListItemPrefix>
             <EllipsisHorizontalCircleIcon className="h-5 w-5 text-[#171f18] font-bold" />
           </ListItemPrefix>
@@ -64,6 +65,14 @@ export function SidebarWithCta() {
               <EllipsisHorizontalCircleIcon className="h-5 w-5 text-[#171f18] " />
             </ListItemPrefix>
             Medications
+          </ListItem>
+        </Link>
+        <Link to={"/patient/prescription"}>
+          <ListItem className="text-white w-5/6">
+            <ListItemPrefix>
+              <BeakerIcon className="h-5 w-5 text-[#171f18] " />
+            </ListItemPrefix>
+            prescription
           </ListItem>
         </Link>
         <ListItem className="text-white w-5/6">
@@ -111,12 +120,7 @@ export function SidebarWithCta() {
             Settings
           </ListItem>
         </Link>
-       
-
-
-
       </List>
-
     </Card>
   );
 }

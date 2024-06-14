@@ -170,7 +170,7 @@ const Settings = () => {
             Profile
           </p>
         </div>
-        <p className="mt-2 mb-4">
+        <p className="mt-4 mb-4">
           This information may be publicaly avalable So be careful what you
           share
         </p>
