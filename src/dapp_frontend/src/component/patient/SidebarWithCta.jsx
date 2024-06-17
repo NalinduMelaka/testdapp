@@ -48,17 +48,21 @@ export function SidebarWithCta() {
     <Card className="w-full space-y-4 py-2 flex flex-col h-full bg-[#A1C398] text-white">
       <div className="mb-1 p-2 mx-auto mt-2 flex flex-row gap-4">
         <img src={logo} alt="logo" height="25" width="25" />
-        <Typography variant="h4" color="white">
-          Patient
-        </Typography>
+        <Link to={"/"}>
+          <Typography variant="h4" color="white">
+            Patient
+          </Typography>
+        </Link>
       </div>
       <List>
-        <ListItem className="text-white w-5/6">
-          <ListItemPrefix>
-            <EllipsisHorizontalCircleIcon className="h-5 w-5 text-[#171f18] font-bold" />
-          </ListItemPrefix>
-          Dashboard
-        </ListItem>
+        <Link to={"/patient"}>
+          <ListItem className="text-white w-5/6">
+            <ListItemPrefix>
+              <EllipsisHorizontalCircleIcon className="h-5 w-5 text-[#171f18] font-bold" />
+            </ListItemPrefix>
+            Dashboard
+          </ListItem>
+        </Link>
         <Link to={"/patient/medications"}>
           <ListItem className="text-white w-5/6">
             <ListItemPrefix>
@@ -94,12 +98,14 @@ export function SidebarWithCta() {
           </ListItemPrefix>
           Hospital Visits
         </ListItem>
-        <ListItem className="text-white w-5/6">
-          <ListItemPrefix>
-            <UserCircleIcon className="h-5 w-5 text-[#171f18]" />
-          </ListItemPrefix>
-          Contacts
-        </ListItem>
+        <Link to={"/patient/emergency"}>
+          <ListItem className="text-white w-5/6">
+            <ListItemPrefix>
+              <UserCircleIcon className="h-5 w-5 text-[#171f18]" />
+            </ListItemPrefix>
+            Contacts
+          </ListItem>
+        </Link>
         <ListItem className="text-white w-5/6">
           <ListItemPrefix>
             <PencilSquareIcon className="h-5 w-5 text-[#171f18]" />

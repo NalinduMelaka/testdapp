@@ -1,104 +1,107 @@
-/**
- * The `Pprescription` component is the main component for displaying a list of patient prescriptions. It fetches the prescription data from the `dapp_backend` contract, handles pagination, and renders a table of prescriptions.
- *
- * The component uses the `usePrescriptionData` hook to fetch the prescription data and manage the loading and error states. The `PrescriptionTable` component is used to render the table of prescriptions, with each row being clickable to navigate to the individual prescription page.
- *
- * The component also includes buttons to navigate to the previous and next pages of the prescription list, with the current page being tracked in the component's state.
- */
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, Typography, Button } from "@material-tailwind/react";
+import { Syringe } from "lucide-react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-
+import {
+  Card,
+  Input,
+  Button,
+  Typography,
+  Textarea,
+  Checkbox,
+  Select,
+  Option,
+} from "@material-tailwind/react";
 import { useAuth } from "../../context/use-auth-client";
 import { dapp_backend } from "../../../../declarations/dapp_backend";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { Syringe } from "lucide-react";
 
 const TABLE_HEAD = ["Prescriber", "Status", "Created", ""];
 
 const PAGE_SIZE = 6;
 
-const PrescriptionTable = React.memo(({ prescriptions, handleRowClick }) => {
-  const startIndex = (currentPage - 1) * PAGE_SIZE;
-  const endIndex = startIndex + PAGE_SIZE;
+const PrescriptionTable = React.memo(
+  ({ prescriptions, handleRowClick, currentPage }) => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
 
-  return (
-    <table className="w-full min-w-max table-auto text-left">
-      <thead>
-        <tr>
-          {TABLE_HEAD.map((head) => (
-            <th
-              key={head}
-              className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
-            >
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="font-normal leading-none opacity-70"
+    return (
+      <table className="w-full min-w-max table-auto text-left">
+        <thead>
+          <tr>
+            {TABLE_HEAD.map((head) => (
+              <th
+                key={head}
+                className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
               >
-                {head}
-              </Typography>
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {prescriptions.slice(startIndex, endIndex).map((med, index) => {
-          const readableDate = new Date(
-            Number(med.timestamp) / 1000000
-          ).toLocaleString();
-          return (
-            <tr
-              onClick={() => handleRowClick(index)}
-              key={index}
-              className="even:bg-blue-gray-50/50 hover:bg-[#C6EBC5] hover:shadow-md transition duration-300 ease-in-out hover:rounded-xl hover:font-bold"
-            >
-              <td className="p-4">
                 <Typography
                   variant="small"
                   color="blue-gray"
-                  className="font-normal"
+                  className="font-normal leading-none opacity-70"
                 >
-                  {med.prescriber}
+                  {head}
                 </Typography>
-              </td>
-              <td className="p-4">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal"
-                >
-                  {med.status}
-                </Typography>
-              </td>
-              <td className="p-4">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal"
-                >
-                  {readableDate}
-                </Typography>
-              </td>
-              <td className="p-4">
-                <Typography
-                  as="a"
-                  href={`/patient/prescription/${index}`}
-                  variant="small"
-                  color="blue-gray"
-                  className="font-medium"
-                >
-                  Edit
-                </Typography>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  );
-});
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {prescriptions.slice(startIndex, endIndex).map((med, index) => {
+            const readableDate = new Date(
+              Number(med.timestamp) / 1000000
+            ).toLocaleString();
+            return (
+              <tr
+                onClick={() => handleRowClick(index)}
+                key={index}
+                className="even:bg-blue-gray-50/50 hover:bg-[#C6EBC5] hover:shadow-md transition duration-300 ease-in-out hover:rounded-xl hover:font-bold"
+              >
+                <td className="p-4">
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal"
+                  >
+                    {med.prescriber}
+                  </Typography>
+                </td>
+                <td className="p-4">
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal"
+                  >
+                    {med.status}
+                  </Typography>
+                </td>
+                <td className="p-4">
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal"
+                  >
+                    {readableDate}
+                  </Typography>
+                </td>
+                <td className="p-4">
+                  <Typography
+                    as="a"
+                    href={`/patient/prescription/${index}`}
+                    variant="small"
+                    color="blue-gray"
+                    className="font-medium"
+                  >
+                    Edit
+                  </Typography>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    );
+  }
+);
 
 const usePrescriptionData = () => {
   const { member, isMember } = useAuth();
@@ -185,7 +188,7 @@ const Pprescription = () => {
             <PrescriptionTable
               prescriptions={prescriptions}
               handleRowClick={handleRowClick}
-              currentPage={currentPage}
+              currentPage={currentPage} // Pass currentPage as a prop
             />
           )}
           <div className="mx-auto flex">

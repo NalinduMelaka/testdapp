@@ -76,6 +76,9 @@ export const useAuthClient = (options = defaultOptions) => {
 
       const principal = identity.getPrincipal();
       setPrincipal(principal);
+      console.log("this is the principal", principal);
+      const re = await dapp_backend.getAllPrincipals();
+      console.log("pricipals list", re);
 
       const member = await dapp_backend.getMember();
       if (member.ok) {

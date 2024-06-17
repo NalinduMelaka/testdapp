@@ -9,42 +9,27 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import {
-  Cog6ToothIcon,
-  InboxArrowDownIcon,
+  UserCircleIcon,
   LifebuoyIcon,
   PowerIcon,
-  UserCircleIcon,
+  UserIcon,
 } from "@heroicons/react/24/solid";
- 
-// profile menu component
-const profileMenuItems = [
-  {
-    label: "My Profile",
-    icon: UserCircleIcon,
-  },
-  {
-    label: "Edit Profile",
-    icon: Cog6ToothIcon,
-  },
-  {
-    label: "Inbox",
-    icon: InboxArrowDownIcon,
-  },
-  {
-    label: "Help",
-    icon: LifebuoyIcon,
-  },
-  {
-    label: "Sign Out",
-    icon: PowerIcon,
-  },
-];
- 
+import { useAuth } from "../context/use-auth-client";
+import { Link } from "react-router-dom";
+import ones from "../../public/123.jpeg";
 export function AvatarWithUserDropdown() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
- 
+  const { logout, isAuthenticated } = useAuth();
+
   const closeMenu = () => setIsMenuOpen(false);
- 
+
+  const handleLogout = () => {
+    if (isAuthenticated) {
+      logout();
+      window.location.href = "/";
+    }
+  };
+
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
       <MenuHandler>
@@ -60,38 +45,50 @@ export function AvatarWithUserDropdown() {
             withBorder={true}
             color="blue-gray"
             className=" p-0.5"
-            src="https://docs.material-tailwind.com/img/face-2.jpg"
+            src={ones}
           />
         </Button>
       </MenuHandler>
       <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon }, key) => {
-          const isLastItem = key === profileMenuItems.length - 1;
-          return (
-            <MenuItem
-              key={label}
-              onClick={closeMenu}
-              className={`flex items-center gap-2 rounded ${
-                isLastItem
-                  ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                  : ""
-              }`}
-            >
-              {React.createElement(icon, {
-                className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
-                strokeWidth: 2,
-              })}
-              <Typography
-                as="span"
-                variant="small"
-                className="font-normal"
-                color={isLastItem ? "red" : "inherit"}
-              >
-                {label}
-              </Typography>
-            </MenuItem>
-          );
-        })}
+        <Link to="/myprofile">
+          <MenuItem
+            onClick={closeMenu}
+            className="flex items-center gap-2 rounded"
+          >
+            <UserCircleIcon className="h-4 w-4" strokeWidth={2} />
+            <Typography as="span" variant="small" className="font-normal">
+              My Profile
+            </Typography>
+          </MenuItem>
+        </Link>
+        <Link to="/help">
+          <MenuItem
+            onClick={closeMenu}
+            className="flex items-center gap-2 rounded"
+          >
+            <LifebuoyIcon className="h-4 w-4" strokeWidth={2} />
+            <Typography as="span" variant="small" className="font-normal">
+              Help
+            </Typography>
+          </MenuItem>
+        </Link>
+        <MenuItem
+          onClick={() => {
+            closeMenu();
+            handleLogout();
+          }}
+          className="flex items-center gap-2 rounded hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
+        >
+          <PowerIcon className="h-4 w-4 text-red-500" strokeWidth={2} />
+          <Typography
+            as="span"
+            variant="small"
+            className="font-normal"
+            color="red"
+          >
+            Sign Out
+          </Typography>
+        </MenuItem>
       </MenuList>
     </Menu>
   );

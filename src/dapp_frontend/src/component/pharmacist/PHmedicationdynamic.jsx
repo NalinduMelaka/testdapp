@@ -1,14 +1,3 @@
-/**
- * The `Pmedicatoindynamic` component is responsible for rendering the medication data for a patient. It fetches the medication data from the backend, allows the user to update the medication information, and provides options to share or delete the medication data.
- *
- * The component uses the `useParams` hook to retrieve the `id` parameter from the URL, and the `useAuth` hook to get the current member and member type. It then fetches the medication data using the `getmedication` function from the `dapp_backend` module.
- *
- * The component renders a form with input fields for the medication details, such as drug name, dose, status, reason, note, and prescriber. The user can update these fields and save the changes using the `updateMedication` function from the `dapp_backend` module.
- *
- * The component also includes a "Share" button that opens a dialog for sharing the medication data, and a "Delete" button that opens a dialog for deleting the medication data.
- *
- * The component uses various UI components from the `@material-tailwind/react` library, as well as the `ToastContainer` component from the `react-toastify` library to display success or error messages.
- */
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { dapp_backend } from "../../../../declarations/dapp_backend";
@@ -25,46 +14,27 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
-  Select,
-  Option,
 } from "@material-tailwind/react";
 
-const Pmedicatoindynamic = () => {
+const PHmedicationdynamic = () => {
   let { id } = useParams();
-  const { member, membertype, logout, isMember } = useAuth();
+  const { member, isMember } = useAuth();
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [nodata, setNodata] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [openShare, setOpenShare] = React.useState(false);
-  const [isprocess, setIsprocess] = useState(false);
   const [isdeleting, setIsdeleting] = useState(false);
-  const [slcid, setSlcid] = useState(null);
-  const [phama, setPhama] = useState([]);
-  const [currentprin, setCurrnetprin] = useState(null);
-  const inputRef = useRef(null);
   const navigate = useNavigate();
   const handleOpen = () => setOpen(!open);
   const handleOpenShare = () => setOpenShare(!openShare);
-  const handleInputChange = (event) => {
-    setData({ ...data, [event.target.name]: event.target.value });
-  };
-
-  const handleslcreg = () => {
-    setSlcid(inputRef.current.value);
-  };
 
   useEffect(() => {
     if (isMember) {
       const getdata = async () => {
         const idNumber = Number(id);
         console.log("id is", idNumber);
-        const result = await dapp_backend.getmedication(idNumber);
-        const resulttwo = await dapp_backend.getPharmacists();
-        if ("ok" in resulttwo) {
-          setPhama(resulttwo.ok);
-          console.log("result two==", resulttwo.ok);
-        }
+        const result = await dapp_backend.getmedicationforpha(idNumber);
 
         console.log(result.ok);
         if ("ok" in result) {
@@ -80,18 +50,11 @@ const Pmedicatoindynamic = () => {
     }
   }, [member, id]);
 
-  if (nodata) {
-    return (
-      <div>
-        <p>Something wrong!</p>
-      </div>
-    );
-  }
   const handledelte = async () => {
     //delete medicatoin
     setIsdeleting(true);
     const idNumber = Number(id);
-    const result = await dapp_backend.deleteMedicationAtIndex(idNumber);
+    const result = await dapp_backend.deletePharmaMedAtIndex(idNumber);
     console.log("result = ", result);
     if ("ok" in result) {
       toast.success("🦄 deleted successfully!", {
@@ -124,27 +87,12 @@ const Pmedicatoindynamic = () => {
       setIsdeleting(false);
     }
   };
-
-  //handle the share function
-
-  const handleshare = async () => {
-    const result = await dapp_backend.addMedicationphama(data, currentprin);
-    console.log("result = ", result);
-  };
-
-  const handlechnagetheselect = (event) => {
-    setCurrnetprin(event.target.value);
-  };
-
   const DeleteDialog = () => {
     return (
       <Dialog open={open} handler={handleOpen}>
-        <DialogHeader>Its a simple dialog.</DialogHeader>
+        <DialogHeader>After delete.</DialogHeader>
         <DialogBody>
-          The key to more success is to have a lot of pillows. Put it this way,
-          it took me twenty five years to get these plants, twenty five years of
-          blood sweat and tears, and I'm never giving up, I'm just getting
-          started. I'm up to something. Fan luv.
+          You no longer avalable this data after click the conform
         </DialogBody>
         <DialogFooter>
           <Button
@@ -170,39 +118,14 @@ const Pmedicatoindynamic = () => {
     );
   };
 
-  const handleUpdate = async () => {
-    // Handle the update logic here
-    setIsprocess(true);
-    const idNumber = Number(id);
-    const result = await dapp_backend.updateMedication(idNumber, data);
-    if ("ok" in result) {
-      toast.success("🦄 Updated successfully!", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-      setIsprocess(false);
-    } else {
-      toast.error("Something wrong try again later!", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-      setIsprocess(false);
-    }
-  };
+  if (nodata) {
+    return (
+      <div>
+        <p>Something wrong!</p>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full w-full md:text-xl 2xl:text-2xl overflow-y-auto">
       <div className="mx-16 mt-4">
@@ -225,14 +148,14 @@ const Pmedicatoindynamic = () => {
                 Drug Name
               </Typography>
               <Input
+                disabled
                 size="lg"
                 placeholder="Amoxicillin"
                 className={`border-t-blue-gray-200 focus:border-t-gray-900 ${
                   loading ? "animate-pulse" : ""
                 }`}
-                value={data.drugname}
+                value={data.pharma.drugname}
                 name="drugname"
-                onChange={handleInputChange}
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -241,14 +164,14 @@ const Pmedicatoindynamic = () => {
                 Dose
               </Typography>
               <Input
-                value={data.dose}
+                disabled
+                value={data.pharma.dose}
                 size="lg"
                 placeholder="100 mg to 1000 mg every 4 to 6 hours as needed."
                 className={`border-t-blue-gray-200 focus:border-t-gray-900 ${
                   loading ? "animate-pulse" : ""
                 }`}
                 name="dose"
-                onChange={handleInputChange}
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -257,14 +180,14 @@ const Pmedicatoindynamic = () => {
                 Status
               </Typography>
               <Input
-                value={data.status}
+                disabled
+                value={data.pharma.status}
                 size="lg"
                 placeholder="Active"
                 className={`border-t-blue-gray-200 focus:border-t-gray-900 ${
                   loading ? "animate-pulse" : ""
                 }`}
                 name="status"
-                onChange={handleInputChange}
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -273,14 +196,14 @@ const Pmedicatoindynamic = () => {
                 Reason
               </Typography>
               <Input
-                value={data.reason}
+                disabled
+                value={data.pharma.reason}
                 size="lg"
                 placeholder="Treatment of bacterial infections"
                 className={`border-t-blue-gray-200 focus:border-t-gray-900 ${
                   loading ? "animate-pulse" : ""
                 }`}
                 name="reason"
-                onChange={handleInputChange}
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -289,14 +212,14 @@ const Pmedicatoindynamic = () => {
                 Note
               </Typography>
               <Input
-                value={data.note}
+                disabled
+                value={data.pharma.note}
                 size="lg"
                 placeholder="This use for my ...."
                 className={`border-t-blue-gray-200 focus:border-t-gray-900 ${
                   loading ? "animate-pulse" : ""
                 }`}
                 name="note"
-                onChange={handleInputChange}
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -305,14 +228,14 @@ const Pmedicatoindynamic = () => {
                 Prescriber
               </Typography>
               <Input
-                value={data.prescriber}
+                disabled
+                value={data.pharma.prescriber}
                 size="lg"
                 placeholder="Doctor"
                 className={`border-t-blue-gray-200 focus:border-t-gray-900 ${
                   loading ? "animate-pulse" : ""
                 }`}
                 name="prescriber"
-                onChange={handleInputChange}
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -320,30 +243,13 @@ const Pmedicatoindynamic = () => {
             </div>
           </form>
           <div className="flex flex-row gap-2 mx-auto my-2">
-            <Button size="md" color="ambur" onClick={handleOpenShare}>
-              Share
-            </Button>
-            <ShareDialog
-              openShare={openShare}
-              handleOpenShare={handleOpenShare}
-              handlechnagetheselect={handlechnagetheselect}
-              handleshare={handleshare}
-            />
-            <Button
-              size="md"
-              color="green"
-              loading={isprocess}
-              onClick={handleUpdate}
-            >
-              Update
-            </Button>
             <Button
               size="md"
               color="red"
               onClick={handleOpen}
               loading={isdeleting}
             >
-              Delete
+              Remove from the list
             </Button>
             <DeleteDialog />
           </div>
@@ -353,40 +259,4 @@ const Pmedicatoindynamic = () => {
   );
 };
 
-export default Pmedicatoindynamic;
-
-const ShareDialog = ({
-  openShare,
-  handleOpenShare,
-  phama,
-  handlechnagetheselect,
-  handleshare,
-}) => {
-  return (
-    <Dialog open={openShare} handler={handleOpenShare}>
-      <DialogHeader>Select a Pharmacist</DialogHeader>
-      <DialogBody>
-        <Select label="select a pharmacist" onChange={handlechnagetheselect}>
-          {phama.map((ph, index) => (
-            <option key={index} value={ph.principal}>
-              {ph.pharma.firstname}
-            </option>
-          ))}
-        </Select>
-      </DialogBody>
-      <DialogFooter>
-        <Button
-          variant="text"
-          color="red"
-          onClick={handleOpenShare}
-          className="mr-1"
-        >
-          <span>Cancel</span>
-        </Button>
-        <Button variant="gradient" color="green" onClick={handleshare}>
-          <span>Share</span>
-        </Button>
-      </DialogFooter>
-    </Dialog>
-  );
-};
+export default PHmedicationdynamic;

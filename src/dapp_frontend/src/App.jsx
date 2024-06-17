@@ -27,10 +27,24 @@ import Psettings from "./component/patient/Psettings";
 import Pmedicatoindynamic from "./component/patient/Pmedicatoindynamic";
 import UploadP from "./component/patient/UploadP";
 import Pprescription from "./component/patient/Pprescription";
-import Dprescription from "./component/doctor/Dprescription";
 import PAppointment from "./component/patient/PAppointment";
 import PEmergency from "./component/patient/PEmergency";
 import Preports from "./component/patient/Preports";
+import Pconsent from "./component/patient/Pconsent";
+import Dreports from "./component/doctor/Dreports";
+import APIreports from "./component/APIuser/APIreports";
+import Phreports from "./component/pharmacist/Phreports";
+import PHmedications from "./component/pharmacist/PHmedications";
+import PHprescriptions from "./component/pharmacist/PHprescriptions";
+import PHmedicationdynamic from "./component/pharmacist/PHmedicationdynamic";
+import DAppointment from "./component/doctor/DAppointment";
+import Dprescription from "./component/doctor/Dprescription";
+import Dnewprescription from "./component/doctor/Dnewprescription";
+import Dprescriptiondynamid from "./component/doctor/Dprescriptiondynamid";
+import Myprofile from "./component/Myprofile";
+import Help from "./component/Help";
+import Pcontactnew from "./component/patient/Pcontactnew";
+import Pcontactdynamic from "./component/patient/Pcontactdynamic";
 
 function App() {
   return (
@@ -38,7 +52,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         {/*public routes */}
         <Route path="/" element={<Land />} />
-        <Route path="about" element={<PAppointment />} />
+        <Route path="about" element={<Dprescription />} />
         <Route path="register" element={<Register />} />
         <Route path="fandq" element={<Fandq />} />
         <Route path="testtwo" element={<T2 />} />
@@ -53,9 +67,12 @@ function App() {
           {/* filter registed usre or not if not show the registration*/}
           <Route element={<RegistredAuth />}>
             <Route path="new" element={<New />} />
+
             {/* add a layout based on user type */}
             <Route element={<Mainlayout />}>
               <Route path="/settings" element={<Settings />} />
+              <Route path="/myprofile" element={<Myprofile />} />
+              <Route path="/help" element={<Help />} />
               {/* for patients only urls */}
               <Route path="/patient" element={<PAuth />}>
                 <Route index element={<PLandingPage />} />
@@ -69,7 +86,10 @@ function App() {
                 <Route path="prescription" element={<Pprescription />} />
                 <Route path="appointment" element={<PAppointment />} />
                 <Route path="emergency" element={<PEmergency />} />
+                <Route path="emergency/new" element={<Pcontactnew />} />
+                <Route path="emergency/:id" element={<Pcontactdynamic />} />
                 <Route path="reports" element={<Preports />} />
+                <Route path="consent" element={<Pconsent />} />
 
                 <Route path="test2" element={<div> test2</div>} />
                 <Route path="dashboard" element={<div>this is dashbord</div>} />
@@ -80,6 +100,14 @@ function App() {
                 <Route
                   index
                   element={<div>This is the doctor home page</div>}
+                />
+                <Route path="reports" element={<Dreports />} />
+                <Route path="appointment" element={<DAppointment />} />
+                <Route path="prescription" element={<Dprescription />} />
+                <Route path="prescription/new" element={<Dnewprescription />} />
+                <Route
+                  path="prescription/:id"
+                  element={<Dprescriptiondynamid />}
                 />
                 <Route
                   path="dashboard"
@@ -93,6 +121,7 @@ function App() {
                   path="dashboard"
                   element={<div>this is api dashboard</div>}
                 />
+                <Route path="reports" element={<APIreports />} />
               </Route>
               {/* for pharma only */}
               <Route path="/pharmacist" element={<PHAuth />}>
@@ -104,6 +133,14 @@ function App() {
                   path="dashboard"
                   element={<div>this is pharmasit dashboard</div>}
                 />
+                <Route path="medications" element={<PHmedications />} />
+                <Route
+                  path="medications/:id"
+                  element={<PHmedicationdynamic />}
+                />
+                <Route path="prescriptions" element={<PHprescriptions />} />
+
+                <Route path="reports" element={<Phreports />} />
               </Route>
             </Route>
           </Route>
