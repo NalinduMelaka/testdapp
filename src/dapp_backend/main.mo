@@ -371,6 +371,24 @@ public shared ({caller}) func addprescriptionfordoc(prescription : Prescription)
     };
   };
 
+  //function to get a specific contact based on id
+  public shared query ({ caller }) func getContactid(id : Nat) : async Result<Contact, Text> {
+      let contactsBufferOpt = contacts.get(caller);
+      switch (contactsBufferOpt) {
+        case (null) {
+          return #err("User not found.");
+        };
+        case (?contactsBuffer) {
+          if (id < contactsBuffer.size()) {
+            return #ok(contactsBuffer.get(id));
+          }else{
+             return #err("Index out of bounds.");
+          }
+         
+        };
+      };
+    };
+
   //function to get a specific medication
   public shared query ({caller}) func getmedicationforpha(ind: Nat): async Result<PharmaWithPrincipal, Text>{
     //retrieve the buffer for the phama's medicaitons
@@ -415,6 +433,31 @@ public shared ({ caller }) func updateMedication(index : Nat, updatedMed : Medic
         };
     };
 };
+
+//function to update specific contact
+  public shared ({ caller }) func updateContact(index : Nat, updatedContact : Contact) : async Result<(), Text> {
+    // Retrieve the buffer for the user's contacts
+    let contactsBufferOpt = contacts.get(caller);
+
+    switch (contactsBufferOpt) {
+        case (null) {
+            // If the user does not exist, return an error
+            return #err("User not found.");
+        };
+        case (?contactsBuffer) {
+            // If the user exists, check if the index is within bounds
+            if (index < contactsBuffer.size()) {
+                // If the index is valid, update the contact at that index
+                contactsBuffer.put(index, updatedContact);
+                return #ok();
+            } else {
+                // If the index is out of bounds, return an error
+                return #err("Invalid index.");
+            };
+        };
+    };
+};
+
 
   // Function to delete a medication record for a user by index
   public shared ({ caller }) func deleteMedicationAtIndex(indexToDelete : Nat) : async Result<(), Text> {

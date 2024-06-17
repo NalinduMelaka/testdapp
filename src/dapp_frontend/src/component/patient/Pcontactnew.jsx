@@ -96,7 +96,7 @@ const Option1InputFields = ({
             </Typography>
             <Input
               name="name"
-              value={care.name}
+              value={care.care}
               onChange={handleChange}
               size="lg"
               placeholder="i care"
