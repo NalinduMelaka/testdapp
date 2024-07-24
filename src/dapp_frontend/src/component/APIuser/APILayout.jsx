@@ -3,11 +3,11 @@ import user from "../../img/user.svg";
 import { Apisidebar } from "./Apisidebar";
 import { SidebarwithBurgermenuAPI } from "./SidebarwithBurgermenuAPI";
 import { Button, Avatar } from "@material-tailwind/react";
-
+import { AvatarWithUserDropdown } from "../AvatarWithUserDropdown";
 const APILayout = ({ children }) => {
   return (
     <div className="w-full">
-      <div className="hidden h-full md:flex md:w-56 md:flex-col md:fixed md:inset-y-0 z-[80] bg-gray-900 lg:flex lg:w-[15%] lg:flex-col lg:fixed lg_inset-y-0">
+      <div className="hidden h-full md:flex md:w-56 md:flex-col md:fixed md:inset-y-0 z-[80] bg-[#A1C398] lg:flex xl:w-[15%] lg:flex-col lg:fixed lg_inset-y-0">
         {/*sidebar */}
         <Apisidebar />
       </div>
@@ -15,7 +15,7 @@ const APILayout = ({ children }) => {
         <div className="w-full h-12  flex flex-row justify-between bg-[#FA7070]">
           <SidebarwithBurgermenuAPI />
           <div className="w-full flex justify-end">
-            <Avatar src={user} />
+            <AvatarWithUserDropdown />
           </div>
         </div>
         <div

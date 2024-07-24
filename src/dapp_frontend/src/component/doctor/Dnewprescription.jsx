@@ -11,7 +11,9 @@ import {
   Spinner,
 } from "@material-tailwind/react";
 import Date from "./Date";
-import { dapp_backend } from "../../../../declarations/dapp_backend";
+
+import { useAuth } from "../../context/use-auth-client";
+
 const Dnewprescription = () => {
   // State to track if the prescription is being processed
   const [isprocess, setIsprocess] = useState(false);
@@ -29,6 +31,7 @@ const Dnewprescription = () => {
   });
 
   const navigate = useNavigate();
+  const { whoamiActor } = useAuth();
 
   // Update the timestamp in the med state when nanoseconds changes
   useEffect(() => {
@@ -57,7 +60,7 @@ const Dnewprescription = () => {
 
   const handleSubmit = async () => {
     setIsprocess(true);
-    const result = await dapp_backend.addprescriptionfordoc(med);
+    const result = await whoamiActor.addprescriptionfordoc(med);
     if ("ok" in result) {
       toast.success("🦄 Created successfully!", {
         position: "top-center",

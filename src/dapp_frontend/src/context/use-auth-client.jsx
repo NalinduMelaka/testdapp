@@ -1,14 +1,29 @@
 import { AuthClient } from "@dfinity/auth-client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { HttpAgent } from "@dfinity/agent";
 
 import { canisterId, createActor } from "declarations/dapp_backend";
 import {
   canisterId as canisterIdtwo,
   createActor as createActortwo,
 } from "declarations/assets";
-import { dapp_backend } from "declarations/dapp_backend";
+
 const AuthContext = createContext();
+
+export const getIdentityProvider = () => {
+  let idpProvider;
+  // Safeguard against server rendering
+  if (typeof window !== "undefined") {
+    const isLocal = process.env.DFX_NETWORK !== "ic";
+    // Safari does not support localhost subdomains
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isLocal && isSafari) {
+      idpProvider = `http://localhost:4943/?canisterId=${process.env.CANISTER_ID_II}`;
+    } else if (isLocal) {
+      idpProvider = `http://${process.env.CANISTER_ID_II}.localhost:4943`;
+    }
+  }
+  return idpProvider;
+};
 
 const defaultOptions = {
   /**
@@ -24,10 +39,7 @@ const defaultOptions = {
    * @type {import("@dfinity/auth-client").AuthClientLoginOptions}
    */
   loginOptions: {
-    identityProvider:
-      process.env.DFX_NETWORK === "ic"
-        ? "http://rdmx6-jaaaa-aaaaa-aaadq-cai.localhost:4943"
-        : `https://identity.ic0.app`,
+    identityProvider: getIdentityProvider(),
   },
 };
 
@@ -57,30 +69,11 @@ export const useAuthClient = (options = defaultOptions) => {
     });
   }, []);
 
-  const login = () => {
-    authClient.login({
-      ...options.loginOptions,
-      onSuccess: () => {
-        updateClient(authClient);
-      },
-    });
-  };
-
-  async function updateClient(client) {
-    try {
-      const isAuthenticated = await client.isAuthenticated();
-      setIsAuthenticated(isAuthenticated);
-
-      const identity = client.getIdentity();
-      setIdentity(identity);
-
-      const principal = identity.getPrincipal();
-      setPrincipal(principal);
-      console.log("this is the principal", principal);
-      const re = await dapp_backend.getAllPrincipals();
-      console.log("pricipals list", re);
-
-      const member = await dapp_backend.getMember();
+  useEffect(() => {
+    const getfunc = async () => {
+      console.log("whoamiActor has been updated:", whoamiActor);
+      const member = await whoamiActor.getMember();
+      console.log("this is the member", member);
       if (member.ok) {
         setIsMember(true);
         const key = Object.keys(member.ok);
@@ -88,37 +81,59 @@ export const useAuthClient = (options = defaultOptions) => {
 
         setMemeber(Object.values(obj)[0]);
         setMemebertype(key[0]);
+      } else {
+        console.log("this is not a member", member);
+        setIsMember(false);
       }
-      // console.log("this is the object", JSON.stringify(identity));
-      // console.log('is authenticated id is ', JSON.stringify(principal));
+    };
+    getfunc();
+  }, [whoamiActor, isMember]);
 
-      setAuthClient(client);
+  const login = () => {
+    authClient.login({
+      ...options.loginOptions,
+      onSuccess: async () => {
+        await updateClient(authClient);
+      },
+    });
+  };
 
-      const actor = createActor(canisterId, {
-        agentOptions: {
-          identity,
-        },
-      });
+  async function updateClient(client) {
+    const isAuthenticated = await client.isAuthenticated();
+    setIsAuthenticated(isAuthenticated);
 
-      const actortwo = createActortwo(canisterIdtwo, {
-        agentOptions: {
-          identity,
-        },
-      });
-      setWhoamiActorTwo(actortwo);
-      setWhoamiActor(actor);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.error("Error updating client:", error);
-      // Handle error gracefully
-    }
+    const identity = client.getIdentity();
+    setIdentity(identity);
+
+    const principal = identity.getPrincipal();
+    setPrincipal(principal);
+
+    console.log("this is the principal", principal.toText());
+
+    setAuthClient(client);
+
+    const actor = createActor(canisterId, {
+      agentOptions: {
+        identity,
+      },
+    });
+    const actortwo = createActortwo(canisterIdtwo, {
+      agentOptions: { identity },
+    });
+
+    setWhoamiActor(actor);
+    setWhoamiActorTwo(actortwo);
+    setLoading(false);
+    console.log("this is the backend canister id:::", canisterId);
+    console.log("this is the actor::", actor);
+    console.log("this is the result", whoamiActor);
+    console.log("this is the result2", whoamiActorTwo);
   }
 
   async function logout() {
     try {
       await authClient?.logout();
-      await updateClient(null); // Reset the state
+      await updateClient(authClient); // Reset the state
     } catch (error) {
       console.error("Error logging out:", error);
       // Handle error gracefully

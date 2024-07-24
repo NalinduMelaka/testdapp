@@ -3,6 +3,7 @@ import { Dsidebar } from "./Dsidebar";
 import { Sidebarwithburder } from "../SidebarwithBurder";
 import { Button, Avatar } from "@material-tailwind/react";
 import user from "../../img/user.svg";
+import { AvatarWithUserDropdown } from "../AvatarWithUserDropdown";
 const DoctorLayout = ({ children }) => {
   return (
     <div className="w-full">
@@ -14,7 +15,7 @@ const DoctorLayout = ({ children }) => {
         <div className="w-full h-12  flex flex-row justify-between bg-[#FA7070] text-base lg:text-lg xl:text-xl 2xl:text-2xl overflow-y-auto">
           <Sidebarwithburder />
           <div className="w-full flex justify-end">
-            <Avatar src={user} />
+            <AvatarWithUserDropdown />
           </div>
         </div>
         <div

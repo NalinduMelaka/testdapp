@@ -12,7 +12,7 @@ import { useAuth } from "../context/use-auth-client";
 import DashboardButton from "./DashboardButton";
 
 function NavList() {
-  const { login, isAuthenticated, logout, membertype } = useAuth();
+  const { login, isAuthenticated, logout, whoamiActor } = useAuth();
 
   const handleLogin = () => {
     if (!isAuthenticated) {
@@ -38,10 +38,10 @@ function NavList() {
         className="p-1 font-medium"
       >
         <Link
-          to="/"
+          to="/datauserreg"
           className="flex items-center hover:text-blue-500 transition-colors"
         >
-          How it works
+          Register as API user
         </Link>
       </Typography>
       <Typography

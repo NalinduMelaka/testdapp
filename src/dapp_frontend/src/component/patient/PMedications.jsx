@@ -4,7 +4,7 @@ import { Card, Typography, Button } from "@material-tailwind/react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 
 import { useAuth } from "../../context/use-auth-client";
-import { dapp_backend } from "../../../../declarations/dapp_backend";
+
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { BriefcaseMedical } from "lucide-react";
 
@@ -13,7 +13,7 @@ const TABLE_HEAD = ["Drug name", "Status", "Created", ""];
 const PAGE_SIZE = 6;
 
 const PMedications = () => {
-  const { member, membertype, logout, isMember } = useAuth();
+  const { member, membertype, logout, isMember, whoamiActor } = useAuth();
   const [isprocess, setIsprocess] = useState(false);
   const [loading, setLoading] = useState(true);
   //for the medications
@@ -36,7 +36,7 @@ const PMedications = () => {
   useEffect(() => {
     if (isMember) {
       const getdata = async () => {
-        const result = await dapp_backend.getMedicationList();
+        const result = await whoamiActor.getMedicationList();
 
         console.log(result.ok);
         if ("ok" in result) {
@@ -55,7 +55,7 @@ const PMedications = () => {
     const newMeds = [...medications];
     newMeds.splice(index, 1);
     setMedications(newMeds);
-    const result = await dapp_backend.deleteMedicationAtIndex(index);
+    const result = await whoamiActor.deleteMedicationAtIndex(index);
     console.log("indes", index);
   };
 

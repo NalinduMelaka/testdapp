@@ -19,7 +19,6 @@ import Phsettings from "./pharmacist/Phsettings";
 import Dsettings from "./doctor/Dsettings";
 import APIsettings from "./APIuser/APIsettings";
 import { useAuth } from "../context/use-auth-client";
-import { dapp_backend } from "../../../declarations/dapp_backend";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Cog } from "lucide-react";
@@ -27,7 +26,14 @@ import { Cog } from "lucide-react";
 const Settings = () => {
   const [userdata, setUserdata] = useState({});
   const [open, setOpen] = React.useState(false);
-  const { member, membertype, logout, setIsMember, setMemebertype } = useAuth();
+  const {
+    member,
+    membertype,
+    logout,
+    setIsMember,
+    setMemebertype,
+    whoamiActor,
+  } = useAuth();
   const [userMap, setUserMap] = useState({});
   const [isprocess, setIsprocess] = useState(false);
   const navigate = useNavigate();
@@ -88,7 +94,7 @@ const Settings = () => {
     setIsprocess(true);
     console.log(membertype, userdata, userMap);
 
-    const result = await dapp_backend.updateMember(userMap);
+    const result = await whoamiActor.updateMember(userMap);
     console.log("Update button clicked", member, userdata, result);
     if ("ok" in result) {
       toast.success("🦄 Updated successfully!", {
@@ -124,7 +130,7 @@ const Settings = () => {
     setIsprocess(true);
     setIsMember(false);
     setMemebertype(null);
-    const result = await dapp_backend.removeMember();
+    const result = await whoamiActor.removeMember();
     console.log("result = ", result);
     if ("ok" in result) {
       toast.success("🦄 deleted successfully!", {

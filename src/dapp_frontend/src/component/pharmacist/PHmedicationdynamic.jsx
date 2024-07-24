@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { dapp_backend } from "../../../../declarations/dapp_backend";
 import { useAuth } from "../../context/use-auth-client";
 import { Link, useNavigate } from "react-router-dom";
 import { FolderCog } from "lucide-react";
@@ -18,7 +17,7 @@ import {
 
 const PHmedicationdynamic = () => {
   let { id } = useParams();
-  const { member, isMember } = useAuth();
+  const { member, isMember, whoamiActor } = useAuth();
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [nodata, setNodata] = useState(false);
@@ -34,7 +33,7 @@ const PHmedicationdynamic = () => {
       const getdata = async () => {
         const idNumber = Number(id);
         console.log("id is", idNumber);
-        const result = await dapp_backend.getmedicationforpha(idNumber);
+        const result = await whoamiActor.getmedicationforpha(idNumber);
 
         console.log(result.ok);
         if ("ok" in result) {
@@ -54,7 +53,7 @@ const PHmedicationdynamic = () => {
     //delete medicatoin
     setIsdeleting(true);
     const idNumber = Number(id);
-    const result = await dapp_backend.deletePharmaMedAtIndex(idNumber);
+    const result = await whoamiActor.deletePharmaMedAtIndex(idNumber);
     console.log("result = ", result);
     if ("ok" in result) {
       toast.success("🦄 deleted successfully!", {

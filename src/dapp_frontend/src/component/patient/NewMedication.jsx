@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/use-auth-client";
-import { dapp_backend } from "../../../../declarations/dapp_backend";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import {
@@ -14,7 +13,7 @@ import {
 } from "@material-tailwind/react";
 
 const NewMedication = () => {
-  const { member, membertype, logout, isMember } = useAuth();
+  const { member, membertype, logout, isMember, whoamiActor } = useAuth();
   const [isprocess, setIsprocess] = useState(false);
   const [med, setMed] = useState({
     drugname: "",
@@ -32,7 +31,7 @@ const NewMedication = () => {
   const handleSubmit = async () => {
     setIsprocess(true);
     const updatedMed = { ...med, timestamp: Date.now() * 1_000_000 };
-    const result = await dapp_backend.addMedication(updatedMed);
+    const result = await whoamiActor.addMedication(updatedMed);
     if ("ok" in result) {
       toast.success("🦄 Created successfully!", {
         position: "top-center",

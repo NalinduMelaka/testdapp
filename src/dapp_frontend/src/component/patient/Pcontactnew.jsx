@@ -11,7 +11,7 @@ import {
 } from "@material-tailwind/react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { dapp_backend } from "../../../../declarations/dapp_backend";
+import { useAuth } from "../../context/use-auth-client";
 
 // Option selection component
 const OptionSelector = ({ onSelect }) => {
@@ -40,6 +40,7 @@ const Option1InputFields = ({
   setCare,
   navigate,
 }) => {
+  const { whoamiActor } = useAuth();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCare({ ...care, [name]: value });
@@ -48,7 +49,7 @@ const Option1InputFields = ({
   const handdleSubmit = async () => {
     setIsprocess(true);
     console.log("content", care);
-    const result = await dapp_backend.addContact({ care: care });
+    const result = await whoamiActor.addContact({ care: care });
     if ("ok" in result) {
       toast.success("🦄 Created successfully!", {
         position: "top-center",
@@ -95,7 +96,7 @@ const Option1InputFields = ({
               Name
             </Typography>
             <Input
-              name="name"
+              name="care"
               value={care.care}
               onChange={handleChange}
               size="lg"
@@ -268,13 +269,14 @@ const Option2InputFields = ({
   setEmergancy,
   navigate,
 }) => {
+  const { whoamiActor } = useAuth();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEmergancy({ ...emergancy, [name]: value });
   };
   const handdleSubmit = async () => {
     console.log("content", emergancy);
-    const result = await dapp_backend.addContact({ emergency: emergancy });
+    const result = await whoamiActor.addContact({ emergency: emergancy });
     if ("ok" in result) {
       toast.success("🦄 Created successfully!", {
         position: "top-center",
@@ -523,13 +525,14 @@ const Option3InputFields = ({
   setProvider,
   navigate,
 }) => {
+  const { whoamiActor } = useAuth();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProvider({ ...provider, [name]: value });
   };
   const handdleSubmit = async () => {
     console.log("content", provider);
-    const result = await dapp_backend.addContact({ provider: provider });
+    const result = await whoamiActor.addContact({ provider: provider });
     if ("ok" in result) {
       toast.success("🦄 Created successfully!", {
         position: "top-center",

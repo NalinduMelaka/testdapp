@@ -11,7 +11,6 @@
  */
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { dapp_backend } from "../../../../declarations/dapp_backend";
 import { useAuth } from "../../context/use-auth-client";
 import { Link, useNavigate } from "react-router-dom";
 import { FolderCog } from "lucide-react";
@@ -31,7 +30,7 @@ import {
 
 const Pmedicatoindynamic = () => {
   let { id } = useParams();
-  const { member, membertype, logout, isMember } = useAuth();
+  const { member, membertype, logout, isMember, whoamiActor } = useAuth();
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [nodata, setNodata] = useState(false);
@@ -59,14 +58,12 @@ const Pmedicatoindynamic = () => {
       const getdata = async () => {
         const idNumber = Number(id);
         console.log("id is", idNumber);
-        const result = await dapp_backend.getmedication(idNumber);
-        const resulttwo = await dapp_backend.getPharmacists();
+        const result = await whoamiActor.getmedication(idNumber);
+        const resulttwo = await whoamiActor.getPharmacists();
         if ("ok" in resulttwo) {
           setPhama(resulttwo.ok);
           console.log("result two==", resulttwo.ok);
         }
-
-        console.log(result.ok);
         if ("ok" in result) {
           setData(result.ok);
           console.log("ind", result.ok);
@@ -91,7 +88,7 @@ const Pmedicatoindynamic = () => {
     //delete medicatoin
     setIsdeleting(true);
     const idNumber = Number(id);
-    const result = await dapp_backend.deleteMedicationAtIndex(idNumber);
+    const result = await whoamiActor.deleteMedicationAtIndex(idNumber);
     console.log("result = ", result);
     if ("ok" in result) {
       toast.success("🦄 deleted successfully!", {
@@ -128,7 +125,7 @@ const Pmedicatoindynamic = () => {
   //handle the share function
 
   const handleshare = async () => {
-    const result = await dapp_backend.addMedicationphama(data, currentprin);
+    const result = await whoamiActor.addMedicationphama(data, currentprin);
     console.log("result = ", result);
   };
 
@@ -136,15 +133,46 @@ const Pmedicatoindynamic = () => {
     setCurrnetprin(event.target.value);
   };
 
+  const ShareDialog = () => {
+    return (
+      <Dialog open={openShare} handler={handleOpenShare}>
+        <DialogHeader>Which pharmacist need to share?.</DialogHeader>
+        <DialogBody>
+          After sharing this record it will be avalable for other people.
+          <Select label="Select pharmacist ">
+            <Option>pharmacist 1</Option>
+          </Select>
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="red"
+            onClick={handleOpenShare}
+            className="mr-1"
+          >
+            <span>Cancel</span>
+          </Button>
+          <Button
+            variant="gradient"
+            color="green"
+            onClick={() => {
+              handleOpenShare();
+            }}
+          >
+            <span>Share</span>
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    );
+  };
   const DeleteDialog = () => {
     return (
       <Dialog open={open} handler={handleOpen}>
-        <DialogHeader>Its a simple dialog.</DialogHeader>
+        <DialogHeader>
+          Are you sure you want to delete this record?.
+        </DialogHeader>
         <DialogBody>
-          The key to more success is to have a lot of pillows. Put it this way,
-          it took me twenty five years to get these plants, twenty five years of
-          blood sweat and tears, and I'm never giving up, I'm just getting
-          started. I'm up to something. Fan luv.
+          After deleting this record, it will no longer be accessible.
         </DialogBody>
         <DialogFooter>
           <Button
@@ -174,7 +202,7 @@ const Pmedicatoindynamic = () => {
     // Handle the update logic here
     setIsprocess(true);
     const idNumber = Number(id);
-    const result = await dapp_backend.updateMedication(idNumber, data);
+    const result = await whoamiActor.updateMedication(idNumber, data);
     if ("ok" in result) {
       toast.success("🦄 Updated successfully!", {
         position: "top-center",
@@ -326,8 +354,6 @@ const Pmedicatoindynamic = () => {
             <ShareDialog
               openShare={openShare}
               handleOpenShare={handleOpenShare}
-              handlechnagetheselect={handlechnagetheselect}
-              handleshare={handleshare}
             />
             <Button
               size="md"
@@ -354,39 +380,3 @@ const Pmedicatoindynamic = () => {
 };
 
 export default Pmedicatoindynamic;
-
-const ShareDialog = ({
-  openShare,
-  handleOpenShare,
-  phama,
-  handlechnagetheselect,
-  handleshare,
-}) => {
-  return (
-    <Dialog open={openShare} handler={handleOpenShare}>
-      <DialogHeader>Select a Pharmacist</DialogHeader>
-      <DialogBody>
-        <Select label="select a pharmacist" onChange={handlechnagetheselect}>
-          {phama.map((ph, index) => (
-            <option key={index} value={ph.principal}>
-              {ph.pharma.firstname}
-            </option>
-          ))}
-        </Select>
-      </DialogBody>
-      <DialogFooter>
-        <Button
-          variant="text"
-          color="red"
-          onClick={handleOpenShare}
-          className="mr-1"
-        >
-          <span>Cancel</span>
-        </Button>
-        <Button variant="gradient" color="green" onClick={handleshare}>
-          <span>Share</span>
-        </Button>
-      </DialogFooter>
-    </Dialog>
-  );
-};

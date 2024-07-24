@@ -1,11 +1,20 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 
 import { Signup } from "./Signup";
 import Home from "./Home";
 import mainimg from "../img/main.jpg";
 import { FooterWithSitemap } from "./ FooterWithSitemap";
+import { useAuth } from "../context/use-auth-client";
 
 const Land = () => {
+  const { whoamiActor } = useAuth();
+  useEffect(() => {
+    const test = async () => {
+      const res = await whoamiActor.whoami();
+      console.log("this is the result from who am I:::", res);
+    };
+    test();
+  }, [whoamiActor]);
   return (
     <div className="max-w-screen bg-white overflow-x-hidden">
       <Home />

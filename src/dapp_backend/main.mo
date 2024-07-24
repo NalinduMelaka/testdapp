@@ -10,8 +10,260 @@ import Nat "mo:base/Nat";
 import Bool "mo:base/Bool";
 import Array "mo:base/Array";
 import Region "mo:base/Region";
+import Server "mo:server";
+import Assets "mo:assets";
+import T "mo:assets/Types";
+import Random "mo:base/Random";
 
-actor {
+shared ({ caller = creator }) actor class () {
+  type Request = Server.Request;
+  type Response = Server.Response;
+  type HttpRequest = Server.HttpRequest;
+  type HttpResponse = Server.HttpResponse;
+  type ResponseClass = Server.ResponseClass;
+
+   stable var serializedEntries : Server.SerializedEntries = ([], [], [creator]);
+
+  var server = Server.Server({ serializedEntries });
+
+  let assets = server.assets;
+
+  server.post(
+    "/greet",
+    func(req : Request, res : ResponseClass) : async Response {
+      let parsedName = req.url.queryObj.get("name");
+      var name = "";
+      switch parsedName {
+        case null { name := "World" };
+        case (?n) {
+          name := n;
+        };
+      };
+      let greeting = "Hello " # name # "!";
+      res.send({
+        status_code = 200;
+        headers = [("Content-Type", "text/plain")];
+        body = Text.encodeUtf8(greeting);
+        streaming_strategy = null;
+        cache_strategy = #default;
+      });
+    },
+  );
+  
+   server.post(
+    "/key",
+    func(req : Request, res : ResponseClass) : async Response {
+      let parsedName = req.url.queryObj.get("apikey");
+      var apikey = "";
+      switch parsedName {
+        case null { apikey := "invalied" };
+        case (?n) {
+          apikey := n;
+        };
+      };
+      let greeting = "is valied " # apikey # "!";
+      res.send({
+        status_code = 200;
+        headers = [("Content-Type", "text/plain")];
+        body = Text.encodeUtf8(greeting);
+        streaming_strategy = null;
+        cache_strategy = #default;
+      });
+    },
+  );
+    server.get("/list", func(req : Request, res : ResponseClass) : async Response {
+        res.send({
+            status_code = 200;
+            headers = [("Content-Type", "text/plain")];
+            body = Text.encodeUtf8("Hello, world!");
+            streaming_strategy = null;
+            cache_strategy = #default;
+        });
+    });
+
+    server.get("/medications", func(req : Request, res : ResponseClass) : async Response {
+        res.send({
+            status_code = 200;
+            headers = [("Content-Type", "text/plain")];
+            body =  "{ \"medication1\": \"panadol\", \"medication2\": \"paracetamol\" }";
+            streaming_strategy = null;
+            cache_strategy = #default;
+        });
+    });
+     server.get("/users", func(req : Request, res : ResponseClass) : async Response {
+        res.send({
+            status_code = 200;
+            headers = [("Content-Type", "text/plain")];
+            body =  "{ \"hello\": \"world\" }";
+            streaming_strategy = null;
+            cache_strategy = #default;
+        });
+    });
+
+  server.get(
+    "/foo",
+    func(req : Request, res : ResponseClass) : async Response {
+      res.send({
+        status_code = 200;
+        headers = [("Content-Type", "text/html")];
+        body = Text.encodeUtf8("<html><body><h1>Foo</h1></body></html>");
+        streaming_strategy = null;
+        cache_strategy = #default;
+      });
+    },
+  );
+
+  public shared ({ caller }) func authorize(other : Principal) : async () {
+    server.authorize({
+      caller;
+      other;
+    });
+  };
+
+  public query func retrieve(path : Assets.Path) : async Assets.Contents {
+    assets.retrieve(path);
+  };
+
+  public shared ({ caller }) func store(
+    arg : {
+      key : Assets.Key;
+      content_type : Text;
+      content_encoding : Text;
+      content : Blob;
+      sha256 : ?Blob;
+    }
+  ) : async () {
+    server.store({
+      caller;
+      arg;
+    });
+  };
+
+  public query func list(arg : {}) : async [T.AssetDetails] {
+    assets.list(arg);
+  };
+
+  public query func get(
+    arg : {
+      key : T.Key;
+      accept_encodings : [Text];
+    }
+  ) : async ({
+    content : Blob;
+    content_type : Text;
+    content_encoding : Text;
+    total_length : Nat;
+    sha256 : ?Blob;
+  }) {
+    assets.get(arg);
+  };
+
+  public shared ({ caller }) func create_batch(arg : {}) : async ({
+    batch_id : T.BatchId;
+  }) {
+    assets.create_batch({
+      caller;
+      arg;
+    });
+  };
+
+  public shared ({ caller }) func create_chunk(
+    arg : {
+      batch_id : T.BatchId;
+      content : Blob;
+    }
+  ) : async ({
+    chunk_id : T.ChunkId;
+  }) {
+    assets.create_chunk({
+      caller;
+      arg;
+    });
+  };
+
+  public shared ({ caller }) func commit_batch(args : T.CommitBatchArguments) : async () {
+    assets.commit_batch({
+      caller;
+      args;
+    });
+  };
+
+  public shared ({ caller }) func create_asset(arg : T.CreateAssetArguments) : async () {
+    assets.create_asset({
+      caller;
+      arg;
+    });
+  };
+
+  public shared ({ caller }) func set_asset_content(arg : T.SetAssetContentArguments) : async () {
+    assets.set_asset_content({
+      caller;
+      arg;
+    });
+  };
+
+  public shared ({ caller }) func unset_asset_content(args : T.UnsetAssetContentArguments) : async () {
+    assets.unset_asset_content({
+      caller;
+      args;
+    });
+  };
+
+  public shared ({ caller }) func delete_asset(args : T.DeleteAssetArguments) : async () {
+    assets.delete_asset({
+      caller;
+      args;
+    });
+  };
+
+  public shared ({ caller }) func clear(args : T.ClearArguments) : async () {
+    assets.clear({
+      caller;
+      args;
+    });
+  };
+
+  public type StreamingStrategy = {
+    #Callback : {
+      callback : shared query StreamingCallbackToken -> async StreamingCallbackHttpResponse;
+      token : StreamingCallbackToken;
+    };
+  };
+
+  public type StreamingCallbackToken = {
+    key : Text;
+    content_encoding : Text;
+    index : Nat;
+    sha256 : ?Blob;
+  };
+
+  public type StreamingCallbackHttpResponse = {
+    body : Blob;
+    token : ?StreamingCallbackToken;
+  };
+
+  public query func http_request_streaming_callback(token : T.StreamingCallbackToken) : async StreamingCallbackHttpResponse {
+    assets.http_request_streaming_callback(token);
+  };
+  public query func http_request(req : HttpRequest) : async HttpResponse {
+    server.http_request(req);
+  };
+  public func http_request_update(req : HttpRequest) : async HttpResponse {
+    await server.http_request_update(req);
+  };
+
+  /**
+    * upgrade hooks
+    */
+  system func preupgrade() {
+    serializedEntries := server.entries();
+  };
+
+  system func postupgrade() {
+    ignore server.cache.pruneAll();
+  };
+
+  //untill from the mail api code
 
   type Patient = {
     firstname : Text;
@@ -129,29 +381,46 @@ type Contact = {
   #care: Care;
   #emergency: Emergency;
   #provider: Provider;
-};
-type PharmaWithPrincipal = {
-  principal: Principal;
-  pharma: Pharma;
-};
+  };
+  type PharmaWithPrincipal = {
+    principal : Principal;
+    pharma : Pharma;
+  };
 
+  type ApIkey = {
+    apikey : Text;
+    timestamp: Nat;
+  };
+
+  type Consent = {
+ prescription: Bool;
+ medication: Bool;
+ appointment: Bool;
+ contacts: Bool;
+  };
 
   type Result<Ok, Err> = Types.Result<Ok, Err>;
   type HashMap<K, V> = Types.HashMap<K, V>;
-
 
   let members = HashMap.HashMap<Principal, User>(0, Principal.equal, Principal.hash);
   let patientIds = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
   let apiuserIds = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
   let medicines = HashMap.HashMap<Principal, Buffer.Buffer<Medication>>(0, Principal.equal, Principal.hash);
   //for the contacts
-  let contacts = HashMap.HashMap<Principal, Buffer.Buffer<Contact>>(0,Principal.equal, Principal.hash);
+  let contacts = HashMap.HashMap<Principal, Buffer.Buffer<Contact>>(0, Principal.equal, Principal.hash);
+  //for the consent
+  let consent = HashMap.HashMap<Principal, Consent>(0, Principal.equal, Principal.hash);
+  //for the api keys
+  let apikeys = HashMap.HashMap<Principal, Buffer.Buffer<ApIkey>>(0, Principal.equal, Principal.hash);
   //for pharamsists to keep medications
-  let phamamedilist = HashMap.HashMap<Principal, Buffer.Buffer<PharmaWithPrincipal>>(0,Principal.equal, Principal.hash);
-  let prescriptions = HashMap.HashMap<Principal, Buffer.Buffer<Prescription>>(0,Principal.equal, Principal.hash);
+  let phamamedilist = HashMap.HashMap<Principal, Buffer.Buffer<PharmaWithPrincipal>>(0, Principal.equal, Principal.hash);
+  let prescriptions = HashMap.HashMap<Principal, Buffer.Buffer<Prescription>>(0, Principal.equal, Principal.hash);
   //for doctors
   let doctorLicences = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
   let appointments = HashMap.HashMap<Text, Buffer.Buffer<Appointment>>(0, Text.equal, Text.hash);
+
+
+
   //check all principlas testing purpose
   public shared query func getAllPrincipals() : async [Principal] {
     let principals = Iter.toArray(members.keys());
@@ -170,8 +439,8 @@ type PharmaWithPrincipal = {
     };
     return Buffer.toArray(patientsBuffer);
   };
-
-
+ 
+  
 public shared query func getTopPharmas(slmcRegNoPrefix : ?Text) : async [(Text, Text)] {
   for ((principal, user) in members.entries()) {
     switch (user) {
@@ -227,6 +496,31 @@ public shared query func getTopPharmas(slmcRegNoPrefix : ?Text) : async [(Text, 
     medsBuffer.add(med);
     return #ok();
   };
+
+
+
+  //function to add API key records for user
+  public shared ({ caller }) func addApikey(apikey : ApIkey) : async Result<(), Text> {
+    let apikeyBuffer = switch (apikeys.get(caller)) {
+      case (null) {
+        // If the user does not exist, create a new buffer
+        let newBuffer = Buffer.Buffer<ApIkey>(1);
+        apikeys.put(caller, newBuffer);
+        newBuffer;
+        };
+        case (?buffer) {
+          // If the user exists, use the existing buffer
+          buffer;
+          };
+          };
+          // Add the new medication to the buffer
+          apikeyBuffer.add(apikey);
+          return #ok();
+    
+
+  };
+
+  //function to delte API key records for user
 
 
 //function to add prescripiton for doctors after they can select the users
@@ -302,6 +596,38 @@ public shared ({caller}) func addprescriptionfordoc(prescription : Prescription)
 
     };
   };
+  
+  // Function to get the count of prescriptions for the caller
+  public shared query ({ caller }) func getPrescriptionCount() : async Nat {
+    // Retrieve the buffer for the user's prescriptions
+    let presBufferOpt = prescriptions.get(caller);
+
+    switch (presBufferOpt) {
+      case (null) {
+        return 0;
+      };
+      case (?presBuffer) {
+        return presBuffer.size();
+      };
+    };
+  };
+
+  // Function to get the count of medications for the caller
+  public shared query ({ caller }) func getMedicationCount() : async Nat {
+    // Retrieve the buffer for the user's medications
+    let medsBufferOpt = medicines.get(caller);
+
+    switch (medsBufferOpt) {
+      case (null) {
+        return 0;
+      };
+      case (?medsBuffer) {
+        return medsBuffer.size();
+      };
+    };
+  };
+
+
 
   //function to get the contact list as an array
   public shared query ({caller}) func getContacts(): async Result<[Contact], Text>{
@@ -349,7 +675,20 @@ public shared ({caller}) func addprescriptionfordoc(prescription : Prescription)
     };
 
   };
+ 
 
+ //function to get user's AP keys list as array
+  public shared query ({ caller }) func getAPIKeyList() : async Result<[ApIkey], Text> {
+    let apiKeyBufferOpt = apikeys.get(caller);
+    switch (apiKeyBufferOpt) {
+      case null {
+        return #err("User not found.");
+      };
+      case (?apiKeyBuffer) {
+        return #ok(Buffer.toArray(apiKeyBuffer));
+      };
+    };
+  };
 
   
   //Functions to get a specific medication
@@ -388,6 +727,23 @@ public shared ({caller}) func addprescriptionfordoc(prescription : Prescription)
         };
       };
     };
+
+    //function to get a specific prescriptipn based on id
+  public shared query ({ caller }) func getPrescriptionId(id : Nat) : async Result<Prescription, Text> {
+    let prescriptionBufferOpt = prescriptions.get(caller);
+    switch (prescriptionBufferOpt) {
+      case (null) {
+        return #err("user not found");
+      };
+      case (?prescriptionBuffer) {
+        if (id < prescriptionBuffer.size()) {
+          return #ok(prescriptionBuffer.get(id));
+        } else {
+          return #err("index out of bounds");
+        };
+      };
+    };
+  };
 
   //function to get a specific medication
   public shared query ({caller}) func getmedicationforpha(ind: Nat): async Result<PharmaWithPrincipal, Text>{
@@ -433,6 +789,32 @@ public shared ({ caller }) func updateMedication(index : Nat, updatedMed : Medic
         };
     };
 };
+
+//function to update specifc prescription
+  public shared ({ caller }) func updatePrescription(index : Nat, updatedPrescription : Prescription) : async Result<(), Text> {
+    // Retrieve the buffer for the user's prescriptions
+    let prescriptionsBufferOpt = prescriptions.get(caller);
+
+    switch (prescriptionsBufferOpt) {
+        case (null) {
+            // If the user does not exist, return an error
+            return #err("User not found.");
+        };
+        case (?prescriptionsBuffer) {
+            // If the user exists, check if the index is within bounds
+            if (index < prescriptionsBuffer.size()) {
+                // If the index is valid, update the prescription at that index
+                prescriptionsBuffer.put(index, updatedPrescription);
+                return #ok();
+            } else {
+                // If the index is out of bounds, return an error
+                return #err("Invalid index.");
+            };
+        };
+    };
+};
+
+
 
 //function to update specific contact
   public shared ({ caller }) func updateContact(index : Nat, updatedContact : Contact) : async Result<(), Text> {
@@ -483,6 +865,83 @@ public shared ({ caller }) func updateMedication(index : Nat, updatedMed : Medic
       };
     };
   };
+
+ // function to delete a specific API key
+  public shared ({ caller }) func deleteAPIAtIndex(indexToDelete : Nat) : async Result<(), Text> {
+    // Retrieve the buffer for the user's medications
+    let medsBufferOpt = apikeys.get(caller);
+
+    switch (medsBufferOpt) {
+      case (null) {
+        // If the user does not exist, return an error
+        return #err("User not found.");
+      };
+      case (?medsBuffer) {
+        // If the user exists, check if the index is within bounds
+        if (indexToDelete < medsBuffer.size()) {
+          // If the index is valid, remove the medication at that index
+          let _ = medsBuffer.remove(indexToDelete);
+
+          return #ok();
+        } else {
+          // If the index is out of bounds, return an error
+          return #err("Invalid index.");
+        };
+      };
+    };
+  };
+
+// function to delete a specific prescription
+  public shared ({ caller }) func deletePrescriptionAtIndex(indexToDelete : Nat) : async Result<(), Text> {
+    // Retrieve the buffer for the user's medications
+    let presBufferOpt = prescriptions.get(caller);
+
+    switch (presBufferOpt) {
+      case (null) {
+        // If the user does not exist, return an error
+        return #err("User not found.");
+      };
+      case (?presBuffer) {
+        // If the user exists, check if the index is within bounds
+        if (indexToDelete < presBuffer.size()) {
+          // If the index is valid, remove the medication at that index
+          let _ = presBuffer.remove(indexToDelete);
+
+          return #ok();
+        } else {
+          // If the index is out of bounds, return an error
+          return #err("Invalid index.");
+        };
+      };
+    };
+  };
+
+
+  //functio to delete a contact at specific index
+  public shared ({ caller }) func deleteContactAtIndex(indexToDelete : Nat) : async Result<(), Text> {
+     // Retrieve the buffer for the user's contacts
+     let contactsBufferOpt = contacts.get(caller);
+ 
+     switch (contactsBufferOpt) {
+       case (null) {
+         // If the user does not exist, return an error
+         return #err("User not found.");
+       };
+       case (?contactsBuffer) {
+         // If the user exists, check if the index is within bounds
+         if (indexToDelete < contactsBuffer.size()) {
+           // If the index is valid, remove the contact at that index
+           let _ = contactsBuffer.remove(indexToDelete);
+ 
+           return #ok();
+         } else {
+           // If the index is out of bounds, return an error
+           return #err("Invalid index.");
+         };
+       };
+     };
+   };
+
   // Function to delete a medication record from the pharmaMedList by index
     public shared ({ caller }) func deletePharmaMedAtIndex(indexToDelete : Nat) : async Result<(), Text> {
       // Retrieve the buffer for the pharmaMedList
@@ -626,9 +1085,10 @@ public shared ({ caller }) func updateMedication(index : Nat, updatedMed : Medic
     };
   };
 
-  public shared ({ caller }) func whoami() : async Principal {
-    D.print(debug_show (caller));
-    return caller;
+  public shared ({ caller }) func whoami() : async Text {
+   let callerText = Principal.toText(caller);
+    D.print("this is the id of caller from backend" # callerText);
+    return callerText;
   };
 
   //appoinments section

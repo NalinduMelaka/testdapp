@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { dapp_backend } from "../../../declarations/dapp_backend";
+import { useAuth } from "../context/use-auth-client";
 const T2 = () => {
+  const { whoamiActor } = useAuth();
   useEffect(() => {
     const fetch = async () => {
-      const resulttwo = await dapp_backend.getPharmacists();
+      const resulttwo = await whoamiActor.getPharmacists();
       console.log(resulttwo);
+      console.log("************");
+      console.log("ttt", whoamiActor);
     };
     fetch();
   }, []);

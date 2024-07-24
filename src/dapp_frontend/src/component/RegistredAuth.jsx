@@ -1,31 +1,23 @@
-import { useEffect, useState } from "react"
-import { dapp_backend } from "../../../declarations/dapp_backend";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/use-auth-client";
-import { Outlet } from 'react-router-dom'
+import { Outlet } from "react-router-dom";
 import Register from "./Register";
 
 const RegistredAuth = () => {
   const { principal, isMember, membertype, loading } = useAuth();
   const [result, setResult] = useState();
 
-
-  useEffect(() => {
-  }, [])
-
+  useEffect(() => {}, []);
 
   if (loading) {
-    return (<div className="flex justify-center items-center">
-      <p>Loading the items</p>
-    </div>)
+    return (
+      <div className="flex justify-center items-center">
+        <p>Loading the items</p>
+      </div>
+    );
   }
 
-  return (
-    <>
-      {
-        isMember ? <Outlet /> : <Register />
-      }
-    </>
-  )
-}
+  return <>{isMember ? <Outlet /> : <Register />}</>;
+};
 
-export default RegistredAuth
+export default RegistredAuth;

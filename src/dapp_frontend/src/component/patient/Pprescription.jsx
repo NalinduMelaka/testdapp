@@ -13,7 +13,6 @@ import {
   Option,
 } from "@material-tailwind/react";
 import { useAuth } from "../../context/use-auth-client";
-import { dapp_backend } from "../../../../declarations/dapp_backend";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 const TABLE_HEAD = ["Prescriber", "Status", "Created", ""];
@@ -104,19 +103,19 @@ const PrescriptionTable = React.memo(
 );
 
 const usePrescriptionData = () => {
-  const { member, isMember } = useAuth();
+  const { member, isMember, whoamiActor } = useAuth();
   const [loading, setLoading] = useState(true);
   const [prescriptions, setPrescriptions] = useState([]);
   const [error, setError] = useState(null);
 
   const fetchPrescriptionData = useCallback(async () => {
     try {
-      const result = await dapp_backend.getPrescriptionList();
+      const result = await whoamiActor.getPrescriptionList();
       if ("ok" in result) {
         setPrescriptions(result.ok);
         setLoading(false);
       } else {
-        setError("Failed to fetch prescription data");
+        setError("No data");
         setLoading(false);
       }
     } catch (err) {

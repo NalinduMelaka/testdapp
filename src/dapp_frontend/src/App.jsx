@@ -45,6 +45,8 @@ import Myprofile from "./component/Myprofile";
 import Help from "./component/Help";
 import Pcontactnew from "./component/patient/Pcontactnew";
 import Pcontactdynamic from "./component/patient/Pcontactdynamic";
+import APIuser from "./component/APIuser/APIuser";
+import APInew from "./component/APIuser/APInew";
 
 function App() {
   return (
@@ -53,7 +55,6 @@ function App() {
         {/*public routes */}
         <Route path="/" element={<Land />} />
         <Route path="about" element={<Dprescription />} />
-        <Route path="register" element={<Register />} />
         <Route path="fandq" element={<Fandq />} />
         <Route path="testtwo" element={<T2 />} />
 
@@ -62,6 +63,7 @@ function App() {
 
         {/*we want to protected these routes we can protec this using requreauth*/}
         <Route element={<Test />}>
+          <Route path="register" element={<Register />} />
           <Route path="datauserreg" element={<APIRegister />} />
           <Route path="dashboard" element={<Dashboard />} />
           {/* filter registed usre or not if not show the registration*/}
@@ -116,7 +118,8 @@ function App() {
               </Route>
               {/*for API users only */}
               <Route path="/datauser" element={<APIauth />}>
-                <Route index element={<div>This is the api home page</div>} />
+                <Route index element={<APIuser />} />
+                <Route path="new" element={<APInew />} />
                 <Route
                   path="dashboard"
                   element={<div>this is api dashboard</div>}

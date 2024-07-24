@@ -17,7 +17,6 @@ import {
   Spinner,
 } from "@material-tailwind/react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-import { dapp_backend } from "../../../declarations/dapp_backend";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/use-auth-client";
 
@@ -27,7 +26,7 @@ export default function Register() {
   const [country, setCountry] = React.useState(112);
   const { name, flags, countryCallingCode } = countries[country];
   const navigate = useNavigate();
-  const { logout, isMember } = useAuth();
+  const { logout, isMember, whoamiActor, setIsMember } = useAuth();
   const [isLoad, setIsLoad] = useState(false);
 
   const [patient, setPatient] = useState({
@@ -77,10 +76,13 @@ export default function Register() {
   const psubmit = async () => {
     if (patient.firstname && patient.lastname && patient.phone) {
       setIsLoad(true);
-
-      const result = await dapp_backend.addMember({ patient: patient });
-      const result2 = await dapp_backend.createPatientIdMapping(patient.id);
+      console.log("hit the submit");
+      console.log("this is the whoami", typeof whoamiActor);
+      console.log("this is the whoami whoam", await whoamiActor.whoami());
+      const result = await whoamiActor.addMember({ patient: patient });
+      const result2 = await whoamiActor.createPatientIdMapping(patient.id);
       if ("ok" in result && "ok" in result2) {
+        setIsMember(true);
         toast.success("🦄 Patient added successfully!", {
           position: "top-center",
           autoClose: 5000,
@@ -127,12 +129,13 @@ export default function Register() {
   const dsubmit = async () => {
     if (doctor.firstname && doctor.lastname && doctor.medicallicence) {
       setIsLoad(true);
-      const result = await dapp_backend.addMember({ doctor: doctor });
-      const result2 = await dapp_backend.createDoctorLicenceMapping(
+      const result = await whoamiActor.addMember({ doctor: doctor });
+      const result2 = await whoamiActor.createDoctorLicenceMapping(
         doctor.medicallicence
       );
 
       if ("ok" in result && "ok" in result2) {
+        setIsMember(true);
         toast.success("🦄 Doctor added successfully!", {
           position: "top-center",
           autoClose: 5000,
@@ -179,8 +182,9 @@ export default function Register() {
   const phasubmit = async () => {
     setIsLoad(true);
     if (pharmacist.firstname && pharmacist.lastname && pharmacist.slmcregno) {
-      const result = await dapp_backend.addMember({ pharma: pharmacist });
+      const result = await whoamiActor.addMember({ pharma: pharmacist });
       if ("ok" in result) {
+        setIsMember(true);
         toast.success("🦄 Pharmacist added successfully!", {
           position: "top-center",
           autoClose: 5000,

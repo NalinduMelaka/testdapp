@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-import { dapp_backend } from "../../../../declarations/dapp_backend";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/use-auth-client";
 import logo from "../../../public/logo.png";
@@ -8,7 +7,7 @@ import { Spinner } from "@material-tailwind/react";
 
 const APIRegister = () => {
   const navigate = useNavigate();
-  const { logout, isAuthenticated, isMember } = useAuth();
+  const { logout, isAuthenticated, isMember, whoamiActor } = useAuth();
   const [isLoad, setIsLoad] = useState(false);
   const [user, setUser] = useState({
     firstname: "",
@@ -28,10 +27,10 @@ const APIRegister = () => {
   const handlesubmit = async () => {
     if (user.firstname && user.lastname && user.phone && user.id) {
       setIsLoad(true);
-      const result = await dapp_backend.addMember({ apiuser: user });
-      const result2 = await dapp_backend.createApiuserIdMapping(user.id);
+      const result = await whoamiActor.addMember({ apiuser: user });
+      const result2 = await whoamiActor.createApiuserIdMapping(user.id);
       if ("ok" in result && "ok" in result2) {
-        toast.success("🦄 Patient added successfully!", {
+        toast.success("🦄 API user added successfully!", {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -43,7 +42,7 @@ const APIRegister = () => {
           transition: Bounce,
         });
         setTimeout(() => {
-          window.location.reload();
+          window.location.href = "/datauser";
         }, 2000);
       } else {
         setIsLoad(false);

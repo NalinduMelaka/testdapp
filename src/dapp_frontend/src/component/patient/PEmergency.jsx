@@ -4,7 +4,6 @@ import { Card, Typography, Button } from "@material-tailwind/react";
 import { ToastContainer } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { dapp_backend } from "../../../../declarations/dapp_backend";
 import { useAuth } from "../../context/use-auth-client";
 
 const TABLE_HEAD = ["Type", "phone", "Created", ""];
@@ -12,7 +11,7 @@ const TABLE_HEAD = ["Type", "phone", "Created", ""];
 const PAGE_SIZE = 6;
 
 const PEmergency = () => {
-  const { member, isMember } = useAuth();
+  const { member, isMember, whoamiActor } = useAuth();
   const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,7 +21,7 @@ const PEmergency = () => {
     if (isMember) {
       const getdata = async () => {
         try {
-          const result = await dapp_backend.getContacts();
+          const result = await whoamiActor.getContacts();
           if ("ok" in result) {
             setContacts(result.ok);
             console.log("reslt ====,", result);

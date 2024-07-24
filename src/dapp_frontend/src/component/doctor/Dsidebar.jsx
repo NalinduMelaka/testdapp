@@ -70,12 +70,7 @@ export function Dsidebar() {
             appointment
           </ListItem>
         </Link>
-        <ListItem className="text-white w-5/6">
-          <ListItemPrefix>
-            <BookOpenIcon className="h-5 w-5 text-[#171f18] font-bold" />
-          </ListItemPrefix>
-          Log book @ notes
-        </ListItem>
+
         <Link to={"/doctor/prescription"}>
           <ListItem className="text-white w-5/6">
             <ListItemPrefix>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { dapp_backend } from "../../../declarations/dapp_backend";
 import { useAuth } from "../context/use-auth-client";
 import { Link, Outlet } from "react-router-dom";
 import PatientLayout from "./patient/PatientLayout";

@@ -32,6 +32,7 @@ import {
   ChevronDownIcon,
   CubeTransparentIcon,
 } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 
 export function Apisidebar() {
   const [open, setOpen] = React.useState(0);
@@ -45,30 +46,26 @@ export function Apisidebar() {
     <Card className="space-y-4 py-4 flex flex-col h-full bg-[#A1C398] text-white">
       <div className="mb-2 p-4 mx-auto mt-4">
         <Typography variant="h3" color="blue-gray">
-          Pharmacist
+          API User
         </Typography>
       </div>
       <List>
-        <ListItem>
-          <ListItemPrefix>
-            <EllipsisHorizontalCircleIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Dashboard
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <ClipboardDocumentCheckIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Medications
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <CogIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Settings
-        </ListItem>
-
-        <hr className="my-2 border-blue-gray-50" />
+        <Link to={"/datauser"}>
+          <ListItem className="text-white w-5/6">
+            <ListItemPrefix>
+              <ClipboardDocumentCheckIcon className="h-5 w-5 text-[#171f18] font-bold" />
+            </ListItemPrefix>
+            API
+          </ListItem>
+        </Link>
+        <Link to={"/settings"}>
+          <ListItem className="text-white w-5/6">
+            <ListItemPrefix>
+              <CogIcon className="h-5 w-5 text-[#171f18] font-bold" />
+            </ListItemPrefix>
+            Settings
+          </ListItem>
+        </Link>
       </List>
     </Card>
   );

@@ -1,13 +1,13 @@
-import React from 'react'
+import React from "react";
 import { Pagination } from "./ui/pagination";
 import { useState } from "react";
-import { dapp_backend } from 'declarations/dapp_backend';
 import {
   Input,
   Checkbox,
   Button,
   Typography,
-  Select, Option,
+  Select,
+  Option,
   Popover,
   PopoverHandler,
   PopoverContent,
@@ -16,8 +16,7 @@ import { format } from "date-fns";
 import { DayPicker } from "react-day-picker";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 
-import { useAuth } from "../context/use-auth-client"
-
+import { useAuth } from "../context/use-auth-client";
 
 function First({ formData, setFormData }) {
   const handleChange = (key, value) => {
@@ -110,8 +109,8 @@ function Second({ formData, setFormData }) {
           className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
           value={maritalStatus}
           onChange={(e) => {
-            setMaritalStatus(e)
-            handleChange("married", e)
+            setMaritalStatus(e);
+            handleChange("married", e);
           }}
         >
           <Option value="married">Married</Option>
@@ -122,11 +121,9 @@ function Second({ formData, setFormData }) {
   );
 }
 
-
 function Third({ formData, setFormData, handleSignUp }) {
   const [date, setDate] = React.useState();
   const [gender, setGender] = useState(null);
-
 
   const handleChange = (key, value) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -144,11 +141,11 @@ function Third({ formData, setFormData, handleSignUp }) {
           value={gender}
           onChange={(e) => {
             setGender(e);
-            handleChange("gender", e)
+            handleChange("gender", e);
           }}
         >
-          <Option value='Male'>Male</Option>
-          <Option value='Female'>Female</Option>
+          <Option value="Male">Male</Option>
+          <Option value="Female">Female</Option>
         </Select>
 
         <Typography variant="h6" color="blue-gray" className="-mb-3">
@@ -159,23 +156,20 @@ function Third({ formData, setFormData, handleSignUp }) {
             <Input
               label="Select a Date"
               onChange={() => {
-                console.log('changed');
-                return null
+                console.log("changed");
+                return null;
               }}
               value={date ? format(date, "PPP") : ""}
-
             />
           </PopoverHandler>
           <PopoverContent className="z-40">
             <DayPicker
-
               mode="single"
               selected={date}
               onSelect={(selectedDate) => {
                 const day = selectedDate.getDate; // Extract the day from the selected date
                 setDate(selectedDate); // Update the date state
                 handleChange("dateofbirth", selectedDate.getTime() * 1000000); // Update the form data
-
               }}
               showOutsideDays
               className="border-0"
@@ -239,28 +233,26 @@ const Patient = () => {
   const formattedDate = currentDate * 1000000;
   const [active, setActive] = useState(1);
   const [formData, setFormData] = useState({
-    fullname: '',             // Text in Motoko
-    email: '',            // Text in Motoko
-    phone: '',      // Text in Motoko
-    emagency: '',  // Text in Motoko
-    nic: '',              // Text in Motoko
-    married: '', // Bool in Motoko
-    gender: '',           // Text in Motoko
-    dateofbirth: '',      // Time.Time in Motoko
-    address: '',
-    createdat: formattedDate          // Text in Motoko
+    fullname: "", // Text in Motoko
+    email: "", // Text in Motoko
+    phone: "", // Text in Motoko
+    emagency: "", // Text in Motoko
+    nic: "", // Text in Motoko
+    married: "", // Bool in Motoko
+    gender: "", // Text in Motoko
+    dateofbirth: "", // Time.Time in Motoko
+    address: "",
+    createdat: formattedDate, // Text in Motoko
   });
-
 
   const [currentPage, setCurrentPage] = useState(1);
   const { whoamiActor } = useAuth();
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -268,9 +260,9 @@ const Patient = () => {
     console.log(formData);
     try {
       await whoamiActor.createPatient(formData);
-      console.log('Sign-up successful');
+      console.log("Sign-up successful");
     } catch (error) {
-      console.error('Sign-up failed:', error.message);
+      console.error("Sign-up failed:", error.message);
     }
   };
 
@@ -283,7 +275,13 @@ const Patient = () => {
       content = <Second formData={formData} setFormData={setFormData} />;
       break;
     case 3:
-      content = <Third formData={formData} setFormData={setFormData} handleSignUp={handleSignUp} />;
+      content = (
+        <Third
+          formData={formData}
+          setFormData={setFormData}
+          handleSignUp={handleSignUp}
+        />
+      );
       break;
     default:
       content = <First formData={formData} setFormData={setFormData} />;
@@ -295,13 +293,15 @@ const Patient = () => {
     setActive(page);
   };
 
-
-
   return (
     <div>
       <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96 flex flex-col">
         {content}
-        <Pagination className="w-full" active={active} setActive={handlePaginationChange} />
+        <Pagination
+          className="w-full"
+          active={active}
+          setActive={handlePaginationChange}
+        />
 
         <Typography color="gray" className="mt-4 text-center font-normal">
           Already have an account?{" "}
@@ -314,11 +314,4 @@ const Patient = () => {
   );
 };
 
-
-export default Patient
-
-
-
-
-
-
+export default Patient;

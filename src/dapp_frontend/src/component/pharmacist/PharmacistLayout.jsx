@@ -3,6 +3,7 @@ import user from "../../img/user.svg";
 import { Phsidebar } from "./Phsidebar";
 import { Sidebarwithburderbu } from "../Sidebarwithburgerbu";
 import { Button, Avatar } from "@material-tailwind/react";
+import { AvatarWithUserDropdown } from "../AvatarWithUserDropdown";
 
 const PharmacistLayout = ({ children }) => {
   return (
@@ -15,7 +16,7 @@ const PharmacistLayout = ({ children }) => {
         <div className="w-full h-12  flex flex-row justify-between bg-[#FA7070]">
           <Sidebarwithburderbu />
           <div className="w-full flex justify-end">
-            <Avatar src={user} />
+            <AvatarWithUserDropdown />
           </div>
         </div>
         <div

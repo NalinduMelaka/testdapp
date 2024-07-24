@@ -79,25 +79,15 @@ export function SidebarWithCta() {
             prescription
           </ListItem>
         </Link>
-        <ListItem className="text-white w-5/6">
-          <ListItemPrefix>
-            <CheckBadgeIcon className="h-5 w-5 text-[#171f18] " />
-          </ListItemPrefix>
-          Oppoinments
-        </ListItem>
+        <Link to={"/patient/appointment"}>
+          <ListItem className="text-white w-5/6">
+            <ListItemPrefix>
+              <CheckBadgeIcon className="h-5 w-5 text-[#171f18] " />
+            </ListItemPrefix>
+            Oppoinments
+          </ListItem>
+        </Link>
 
-        <ListItem className="text-white w-5/6">
-          <ListItemPrefix>
-            <BookOpenIcon className="h-5 w-5 text-[#171f18]" />
-          </ListItemPrefix>
-          Log book @ notes
-        </ListItem>
-        <ListItem className="text-white w-5/6">
-          <ListItemPrefix>
-            <HomeIcon className="h-5 w-5 text-[#171f18]" />
-          </ListItemPrefix>
-          Hospital Visits
-        </ListItem>
         <Link to={"/patient/emergency"}>
           <ListItem className="text-white w-5/6">
             <ListItemPrefix>
@@ -106,18 +96,15 @@ export function SidebarWithCta() {
             Contacts
           </ListItem>
         </Link>
-        <ListItem className="text-white w-5/6">
-          <ListItemPrefix>
-            <PencilSquareIcon className="h-5 w-5 text-[#171f18]" />
-          </ListItemPrefix>
-          Clinical notes
-        </ListItem>
-        <ListItem className="text-white w-5/6">
-          <ListItemPrefix>
-            <ClipboardDocumentCheckIcon className="h-5 w-5 text-[#171f18]" />
-          </ListItemPrefix>
-          Consensus
-        </ListItem>
+
+        <Link to={"/patient/consent"}>
+          <ListItem className="text-white w-5/6">
+            <ListItemPrefix>
+              <ClipboardDocumentCheckIcon className="h-5 w-5 text-[#171f18]" />
+            </ListItemPrefix>
+            Consensus
+          </ListItem>
+        </Link>
         <Link to={"/settings"}>
           <ListItem className="text-white w-5/6">
             <ListItemPrefix>

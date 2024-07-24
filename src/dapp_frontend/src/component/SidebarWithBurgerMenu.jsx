@@ -28,7 +28,7 @@ import {
   BookOpenIcon,
   HomeIcon,
   PencilSquareIcon,
-  ClipboardDocumentCheckIcon
+  ClipboardDocumentCheckIcon,
 } from "@heroicons/react/24/solid";
 import {
   ChevronRightIcon,
@@ -61,7 +61,7 @@ export function SidebarWithBurgerMenu() {
         )}
       </IconButton>
       <Drawer open={isDrawerOpen} onClose={closeDrawer}>
-        <Card className="w-full h-full bg-[#B5C0D0]" >
+        <Card className="w-full h-full bg-[#B5C0D0]">
           <div className="mb-2 p-4 mx-auto mt-4">
             <Typography variant="h3" color="blue-gray">
               Patient
@@ -86,29 +86,12 @@ export function SidebarWithBurgerMenu() {
               </ListItemPrefix>
               Settings
             </ListItem>
-            <ListItem>
-              <ListItemPrefix>
-                <BookOpenIcon className="h-5 w-5" />
-              </ListItemPrefix>
-              Log book @ notes
-            </ListItem>
-            <ListItem>
-              <ListItemPrefix>
-                <HomeIcon className="h-5 w-5" />
-              </ListItemPrefix>
-              Hospital Visits
-            </ListItem>
+
             <ListItem>
               <ListItemPrefix>
                 <UserCircleIcon className="h-5 w-5" />
               </ListItemPrefix>
               Contacts
-            </ListItem>
-            <ListItem>
-              <ListItemPrefix>
-                <PencilSquareIcon className="h-5 w-5" />
-              </ListItemPrefix>
-              Clinical notes
             </ListItem>
             <ListItem>
               <ListItemPrefix>
@@ -118,11 +101,7 @@ export function SidebarWithBurgerMenu() {
             </ListItem>
 
             <hr className="my-2 border-blue-gray-50" />
-
-
-
           </List>
-
         </Card>
       </Drawer>
     </div>

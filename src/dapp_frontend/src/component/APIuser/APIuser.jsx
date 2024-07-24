@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Syringe } from "lucide-react";
+import { DatabaseZap } from "lucide-react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import {
   Card,
@@ -12,95 +12,124 @@ import {
   Select,
   Option,
 } from "@material-tailwind/react";
-import { useAuth } from "../../context/use-auth-client";
-import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-const TABLE_HEAD = ["Prescriber", "Status", "Created", ""];
+import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useAuth } from "../../context/use-auth-client";
+
+const TABLE_HEAD = ["", "Status", "Created", ""];
 
 const PAGE_SIZE = 6;
 
-const PrescriptionTable = React.memo(
-  ({ prescriptions, handleRowClick, currentPage }) => {
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-    const endIndex = startIndex + PAGE_SIZE;
+const PrescriptionTable = React.memo(({ prescriptions, currentPage }) => {
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = startIndex + PAGE_SIZE;
+  const navigate = useNavigate();
+  const { whoamiActor } = useAuth();
+  const ondelete = async (index) => {
+    const result = await whoamiActor.deleteAPIAtIndex(index);
+    if ("ok" in result) {
+      toast.success("🦄deleted successfully!", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
 
-    return (
-      <table className="w-full min-w-max table-auto text-left">
-        <thead>
-          <tr>
-            {TABLE_HEAD.map((head) => (
-              <th
-                key={head}
-                className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
+      setTimeout(() => {
+        navigate("/datauser");
+      }, 2000);
+    } else {
+      toast.error("Something wrong try again later!", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+  };
+  return (
+    <table className="w-full min-w-max table-auto text-left">
+      <thead>
+        <tr>
+          {TABLE_HEAD.map((head) => (
+            <th
+              key={head}
+              className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
+            >
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-normal leading-none opacity-70"
               >
+                {head}
+              </Typography>
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {prescriptions.slice(startIndex, endIndex).map((med, index) => {
+          const readableDate = new Date(
+            Number(med.timestamp) / 1000000
+          ).toLocaleString();
+          return (
+            <tr
+              onClick={() => handleRowClick(index)}
+              key={index}
+              className="even:bg-blue-gray-50/50 hover:bg-[#C6EBC5] hover:shadow-md transition duration-300 ease-in-out hover:rounded-xl hover:font-bold"
+            >
+              <td className="p-4">
                 <Typography
                   variant="small"
                   color="blue-gray"
-                  className="font-normal leading-none opacity-70"
+                  className="font-normal"
+                ></Typography>
+              </td>
+              <td className="p-4">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-normal"
                 >
-                  {head}
+                  {med.status}
                 </Typography>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {prescriptions.slice(startIndex, endIndex).map((med, index) => {
-            const readableDate = new Date(
-              Number(med.timestamp) / 1000000
-            ).toLocaleString();
-            return (
-              <tr
-                onClick={() => handleRowClick(index)}
-                key={index}
-                className="even:bg-blue-gray-50/50 hover:bg-[#C6EBC5] hover:shadow-md transition duration-300 ease-in-out hover:rounded-xl hover:font-bold"
-              >
-                <td className="p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {med.prescriber}
-                  </Typography>
-                </td>
-                <td className="p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {med.status}
-                  </Typography>
-                </td>
-                <td className="p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {readableDate}
-                  </Typography>
-                </td>
-                <td className="p-4">
-                  <Typography
-                    as="a"
-                    href={`/doctor/prescription/${index}`}
-                    variant="small"
-                    color="blue-gray"
-                    className="font-medium"
-                  >
-                    Edit
-                  </Typography>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    );
-  }
-);
+              </td>
+              <td className="p-4">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-normal"
+                >
+                  {readableDate}
+                </Typography>
+              </td>
+              <td className="p-4">
+                <Button
+                  as="a"
+                  variant="small"
+                  color="blue-gray"
+                  className="font-medium"
+                >
+                  Delete
+                </Button>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+});
 
 const usePrescriptionData = () => {
   const { member, isMember, whoamiActor } = useAuth();
@@ -110,7 +139,7 @@ const usePrescriptionData = () => {
 
   const fetchPrescriptionData = useCallback(async () => {
     try {
-      const result = await whoamiActor.getPrescriptionList();
+      const result = await whoamiActor.getAPIKeyList();
       if ("ok" in result) {
         setPrescriptions(result.ok);
         setLoading(false);
@@ -133,22 +162,10 @@ const usePrescriptionData = () => {
   return { loading, prescriptions, error };
 };
 
-const Dprescription = () => {
-  const { whoamiActor } = useAuth();
+const APIuser = () => {
   const { loading, prescriptions, error } = usePrescriptionData();
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log("from the about the actor:::", whoamiActor);
-  }, []);
-
-  const handleRowClick = useCallback(
-    (id) => {
-      navigate(`/doctor/prescription/${id}`);
-    },
-    [navigate]
-  );
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1);
@@ -164,25 +181,24 @@ const Dprescription = () => {
   return (
     <div className="h-full w-full md:text-xl 2xl:text-2xl overflow-y-auto">
       <div className="mx-16 mt-4">
-        <p className="font-bold">Prescription Data</p>
+        <p className="font-bold">API Data</p>
         <div className="flex flex-row justify-between items-center h-24">
           <div className="flex flex-row items-center gap-2 ">
-            <Syringe size={48} />
+            <DatabaseZap size={48} />
             <p className="md:text-3xl 2xl:text-4xl text-black font-bold ">
-              Prescription List
+              API access
             </p>
           </div>
           <div>
-            <Link to="/doctor/prescription/new">
+            <Link to="/datauser/new">
               <div className="text-white bg-black rounded-lg p-2 hover:bg-gray-900 hover:shadow-lg ">
-                New prescription
+                New API Key
               </div>
             </Link>
           </div>
         </div>
       </div>
       <ToastContainer />
-
       <div className="mx-16">
         <Card className="h-full w-full ">
           {loading ? (
@@ -198,7 +214,6 @@ const Dprescription = () => {
           ) : (
             <PrescriptionTable
               prescriptions={prescriptions}
-              handleRowClick={handleRowClick}
               currentPage={currentPage} // Pass currentPage as a prop
             />
           )}
@@ -227,7 +242,7 @@ const Dprescription = () => {
   );
 };
 
-export default Dprescription;
+export default APIuser;
 
 function SkeletonForTable() {
   return (
